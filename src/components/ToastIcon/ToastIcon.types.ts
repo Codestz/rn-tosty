@@ -12,6 +12,9 @@ export interface ToastIconProps {
   color?: string;
   iconConfig?: IconConfig; // Global icon configuration
   toastIconOverride?: any; // Per-toast icon override
+  // Variant context for better color resolution
+  variantTextColor?: string;
+  variantIconColor?: string;
 }
 
 export interface IconSizes {
@@ -37,5 +40,9 @@ export interface ToastIconContainerProps {
   };
   layout: {
     spacing: any;
+  };
+  variantColors: {
+    textColor?: string;
+    iconColor?: string;
   };
 }

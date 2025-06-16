@@ -18,7 +18,7 @@ export class ThemeManager {
 
   private constructor() {
     // Default to modern light theme
-    this.currentTheme = themeRegistry.modern.light;
+    this.currentTheme = themeRegistry.default.light;
   }
 
   static getInstance(): ThemeManager {
@@ -33,9 +33,9 @@ export class ThemeManager {
     const themePair = themeRegistry[themeName];
     if (!themePair) {
       console.warn(
-        `Theme "${themeName}" not found. Falling back to modern theme.`
+        `Theme "${themeName}" not found. Falling back to default theme.`
       );
-      return themeRegistry.modern.light;
+      return themeRegistry.default.light;
     }
 
     // Determine which mode to use
@@ -120,4 +120,4 @@ export const parseLegacyThemeName = (
 };
 
 // Default theme
-export const defaultTheme = themeRegistry.modern.light;
+export const defaultTheme = themeRegistry.default.light;

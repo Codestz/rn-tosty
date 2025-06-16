@@ -1,6 +1,7 @@
 // Promise Toast Manager - Handles promise toast lifecycle and transitions
 import React from 'react';
 import { ToastLoadingIcon } from '../components/ToastLoadingIcon/ToastLoadingIcon';
+import type { ToastLayoutConfig } from '../types/ConfigTypes';
 import type { CustomIconComponent } from '../types/IconTypes';
 import type {
   LoadingIconConfig,
@@ -12,6 +13,7 @@ import type {
   ToastConfig,
   ToastPosition,
 } from '../types/ToastTypes';
+import { resolveLoadingIconColor } from '../utils/iconResolver';
 import { ToastManager } from './ToastManager';
 
 export class PromiseToastManager {
@@ -29,16 +31,20 @@ export class PromiseToastManager {
     messages: PromiseMessages<T>,
     config: PromiseConfig = {}
   ): Promise<T> {
-    const { position = 'smart' } = config;
+    const { position = 'smart', layout } = config;
 
     // Create loading toast
     const loadingConfig = this.resolvePromiseMessage(messages.loading);
+
     const loadingToastConfig: ToastConfig = {
       ...loadingConfig,
-      type: 'info',
+      // Use the type from loadingConfig if specified, otherwise default to 'custom'
+      // Loading toasts represent a distinct loading state, not info
+      type: loadingConfig.type || 'custom',
       duration: 'permanent',
       position,
-      variant: 'styled', // Promise toasts should always be styled
+      // Merge global layout config with loading-specific layout config
+      layout: { ...layout, ...loadingConfig.layout },
     };
 
     // Handle loading icon configuration
@@ -63,7 +69,7 @@ export class PromiseToastManager {
 
       // Replace immediately with success toast
       this.toastManager.dismiss(loadingId);
-      this.showResultToast(successConfig, 'success', position);
+      this.showResultToast(successConfig, 'success', position, layout);
 
       return result;
     } catch (error) {
@@ -75,7 +81,7 @@ export class PromiseToastManager {
 
       // Replace immediately with error toast
       this.toastManager.dismiss(loadingId);
-      this.showResultToast(errorConfig, 'error', position);
+      this.showResultToast(errorConfig, 'error', position, layout);
 
       throw error;
     }
@@ -105,6 +111,7 @@ export class PromiseToastManager {
 
   /**
    * Creates a loading icon component from configuration
+   * The wrapper component receives theme and can access variant context through props
    */
   private createLoadingIcon(
     iconConfig?: CustomIconComponent | LoadingIconConfig | false
@@ -125,21 +132,22 @@ export class PromiseToastManager {
         animated = true,
       } = iconConfig;
 
-      return ({ theme }) =>
+      return ({ theme, textColor, iconColor }) =>
         React.createElement(ToastLoadingIcon, {
           type,
           size,
-          color,
+          color: resolveLoadingIconColor(theme, color, textColor, iconColor),
           theme,
           animated,
         });
     }
 
     // Default loading icon (when no config provided or config is not a LoadingIconConfig)
-    return ({ theme }) =>
+    return ({ theme, textColor, iconColor }) =>
       React.createElement(ToastLoadingIcon, {
         type: 'spinner',
         size: 'medium',
+        color: resolveLoadingIconColor(theme, undefined, textColor, iconColor),
         theme,
         animated: true,
       });
@@ -151,13 +159,15 @@ export class PromiseToastManager {
   private showResultToast(
     config: PromiseToastConfig,
     type: 'success' | 'error',
-    position: ToastPosition
+    position: ToastPosition,
+    globalLayout?: ToastLayoutConfig
   ): string {
     const resultToastConfig: ToastConfig = {
       ...config,
       type,
       position,
-      variant: 'styled',
+      // Merge global layout config with result-specific layout config
+      layout: { ...globalLayout, ...config.layout },
     };
 
     return this.toastManager.show(resultToastConfig);

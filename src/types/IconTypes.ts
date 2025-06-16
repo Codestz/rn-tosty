@@ -7,6 +7,9 @@ export interface BaseIconProps {
   size: number;
   color: string;
   theme: Theme;
+  // Variant context for better color resolution (optional for backward compatibility)
+  textColor?: string;
+  iconColor?: string;
 }
 
 // Custom icon component type

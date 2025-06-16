@@ -20,6 +20,8 @@ export const ToastIcon: React.FC<ToastIconProps> = ({
   color,
   iconConfig,
   toastIconOverride,
+  variantTextColor,
+  variantIconColor,
 }) => {
   const animationProgress = useSharedValue(0);
 
@@ -105,6 +107,8 @@ export const ToastIcon: React.FC<ToastIconProps> = ({
         size={resolvedIcon.size}
         color={resolvedIcon.color}
         theme={theme}
+        textColor={variantTextColor}
+        iconColor={variantIconColor}
       />
     </Animated.View>
   );

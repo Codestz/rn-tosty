@@ -35,10 +35,16 @@ export const useToastStyles = (
     return getVariantIconConfig(resolvedVariant);
   }, [resolvedVariant]);
 
-  // Calculate layout configuration
+  // Calculate layout configuration - merge global config with per-toast config
   const layout = useMemo(() => {
-    return calculateLayout(config?.layout, theme);
-  }, [config?.layout, theme]);
+    // Merge global layout config with per-toast layout config
+    // Per-toast config takes precedence over global config
+    const mergedLayoutConfig = {
+      ...config?.layout,
+      ...toast.config.layout,
+    };
+    return calculateLayout(mergedLayoutConfig, theme);
+  }, [config?.layout, toast.config.layout, theme]);
 
   // Create container style using modern variant system
   const variantContainerStyle = useMemo(() => {
@@ -123,6 +129,11 @@ export const useToastStyles = (
     titleStyle,
     messageStyle,
     getMessageLines,
+    // Expose variant colors for custom icons (including loading icons)
+    variantColors: {
+      textColor: resolvedVariant.style.textColor,
+      iconColor: resolvedVariant.style.iconColor,
+    },
   };
 };
 

@@ -368,14 +368,29 @@ export class VariantManager implements IVariantManager {
   ): ToastVariantDefinition {
     const resolvedStyle = { ...variant.style };
 
-    // Resolve theme color references (e.g., 'theme.colors.primary')
+    // Resolve theme references (colors and border radius)
     Object.keys(resolvedStyle).forEach((key) => {
       const value = resolvedStyle[key as keyof VariantStyle];
-      if (typeof value === 'string' && value.startsWith('theme.colors.')) {
-        const colorPath = value.replace('theme.colors.', '');
-        const resolvedColor = (theme.colors as any)[colorPath];
-        if (resolvedColor) {
-          (resolvedStyle as any)[key] = resolvedColor;
+
+      if (typeof value === 'string') {
+        // Resolve theme color references (e.g., 'theme.colors.primary')
+        if (value.startsWith('theme.colors.')) {
+          const colorPath = value.replace('theme.colors.', '');
+          const resolvedColor = (theme.colors as any)[colorPath];
+          if (resolvedColor) {
+            (resolvedStyle as any)[key] = resolvedColor;
+          }
+        }
+
+        // Resolve theme border radius references (e.g., 'theme.borderRadius.md')
+        if (value.startsWith('theme.borderRadius.')) {
+          const borderRadiusPath = value.replace('theme.borderRadius.', '');
+          const resolvedBorderRadius = (theme.borderRadius as any)[
+            borderRadiusPath
+          ];
+          if (resolvedBorderRadius !== undefined) {
+            (resolvedStyle as any)[key] = resolvedBorderRadius;
+          }
         }
       }
     });

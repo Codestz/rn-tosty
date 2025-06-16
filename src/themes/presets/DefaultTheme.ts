@@ -1,4 +1,4 @@
-// Modern Theme - Clean, contemporary design perfect for most apps
+// Default Theme - Clean, contemporary design perfect for most apps
 import type { Theme, ThemePair } from '../../types/ThemeTypes';
 import {
   baseAnimations,
@@ -10,9 +10,9 @@ import {
   colorUtils,
 } from '../base/BaseTheme';
 
-// Modern Light Theme
-const modernLight: Theme = {
-  name: 'modern-light',
+// Default Light Theme
+const defaultLight: Theme = {
+  name: 'default-light',
   mode: 'light',
 
   colors: {
@@ -82,9 +82,9 @@ const modernLight: Theme = {
   },
 };
 
-// Modern Dark Theme
-const modernDark: Theme = {
-  name: 'modern-dark',
+// Default Dark Theme
+const defaultDark: Theme = {
+  name: 'default-dark',
   mode: 'dark',
 
   colors: {
@@ -154,8 +154,8 @@ const modernDark: Theme = {
   },
 };
 
-// Export the Modern theme pair
-export const ModernTheme: ThemePair = {
-  light: modernLight,
-  dark: modernDark,
+// Export the Default theme pair
+export const DefaultTheme: ThemePair = {
+  light: defaultLight,
+  dark: defaultDark,
 };

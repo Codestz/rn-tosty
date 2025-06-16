@@ -145,20 +145,13 @@ export interface ThemePair {
 }
 
 // Available theme names
-export type ThemeName =
-  | 'modern'
-  | 'glassmorphism'
-  | 'minimalist'
-  | 'vibrant'
-  | 'professional';
+export type ThemeName = 'default' | 'liquidGlass' | 'minimalist';
 
 // Theme registry
 export interface ThemeRegistry {
-  modern: ThemePair;
-  glassmorphism: ThemePair;
+  default: ThemePair;
+  liquidGlass: ThemePair;
   minimalist: ThemePair;
-  vibrant: ThemePair;
-  professional: ThemePair;
 }
 
 // Theme configuration for toast

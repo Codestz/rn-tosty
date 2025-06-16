@@ -13,6 +13,7 @@ export const ToastIconContainer: React.FC<ToastIconContainerProps> = ({
   config,
   iconConfig,
   layout,
+  variantColors,
 }) => {
   // Don't render if icon is disabled or position is none
   if (!iconConfig.shouldShowIcon || iconConfig.iconPosition === 'none') {
@@ -38,6 +39,8 @@ export const ToastIconContainer: React.FC<ToastIconContainerProps> = ({
         color={iconConfig.iconColor}
         iconConfig={config?.icons}
         toastIconOverride={toast.config.icon}
+        variantTextColor={variantColors.textColor}
+        variantIconColor={variantColors.iconColor}
       />
     </View>
   );

@@ -29,20 +29,6 @@ const resolveLoadingIconSize = (size: LoadingIconSize): number => {
   return LOADING_ICON_SIZES[size];
 };
 
-/**
- * Gets the default loading icon color based on theme
- */
-const getDefaultLoadingColor = (theme: any): string => {
-  const isGlassmorphism = theme.name?.includes('glassmorphism');
-
-  if (isGlassmorphism) {
-    return theme.colors.primary;
-  }
-
-  // For other themes, use a neutral color that works on colored backgrounds
-  return '#FFFFFF';
-};
-
 export const ToastLoadingIcon: React.FC<ToastLoadingIconProps> = ({
   type = 'spinner',
   size = 'medium',
@@ -58,10 +44,16 @@ export const ToastLoadingIcon: React.FC<ToastLoadingIconProps> = ({
 
   // Resolve size and color
   const resolvedSize = useMemo(() => resolveLoadingIconSize(size), [size]);
-  const resolvedColor = useMemo(
-    () => color || getDefaultLoadingColor(theme),
-    [color, theme]
-  );
+  const resolvedColor = useMemo(() => {
+    // Priority: explicit color > text color > theme primary
+    if (color) {
+      return color;
+    }
+
+    // Use onSurface color as it's the standard text color
+    // This ensures loading icons match the text color in the variant
+    return theme.colors.onSurface;
+  }, [color, theme]);
 
   // Handle transitions to success/error states
   useEffect(() => {

@@ -69,10 +69,10 @@ const minimalistLight: Theme = {
 
   borderRadius: {
     ...baseBorderRadius,
-    sm: 2, // Very subtle rounding
-    md: 4,
-    lg: 6,
-    xl: 8,
+    sm: 0, // Completely boxed - no rounding
+    md: 0, // Completely boxed - no rounding
+    lg: 0, // Completely boxed - no rounding
+    xl: 0, // Completely boxed - no rounding
   },
 
   animations: {
@@ -180,10 +180,10 @@ const minimalistDark: Theme = {
 
   borderRadius: {
     ...baseBorderRadius,
-    sm: 2,
-    md: 4,
-    lg: 6,
-    xl: 8,
+    sm: 0, // Completely boxed - no rounding
+    md: 0, // Completely boxed - no rounding
+    lg: 0, // Completely boxed - no rounding
+    xl: 0, // Completely boxed - no rounding
   },
 
   animations: {

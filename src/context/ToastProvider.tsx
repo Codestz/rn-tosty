@@ -37,7 +37,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
   // Get the theme object - handle different theme types
   const getCurrentTheme = (): Theme => {
     if (!theme) {
-      return getTheme('modern');
+      return getTheme('default');
     }
 
     // If it's already a Theme object, use it directly
@@ -56,7 +56,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
     }
 
     // Fallback to modern theme
-    return getTheme('modern');
+    return getTheme('default');
   };
 
   const currentTheme = getCurrentTheme();

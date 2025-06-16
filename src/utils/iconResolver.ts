@@ -168,6 +168,33 @@ const getDefaultIconColor = (type: ToastType, theme: Theme): string => {
 };
 
 /**
+ * Resolves loading icon color based on variant context
+ * This ensures loading icons match the text/icon color of the variant
+ */
+export const resolveLoadingIconColor = (
+  theme: Theme,
+  explicitColor?: string,
+  variantTextColor?: string,
+  variantIconColor?: string
+): string => {
+  // Priority: explicit color > variant icon color > variant text color > theme text color
+  if (explicitColor) {
+    return explicitColor;
+  }
+
+  if (variantIconColor) {
+    return variantIconColor;
+  }
+
+  if (variantTextColor) {
+    return variantTextColor;
+  }
+
+  // Default to the standard text color
+  return theme.colors.onSurface;
+};
+
+/**
  * Validates that a custom icon component has the correct interface
  */
 export const validateCustomIcon = (

@@ -3,7 +3,7 @@ export { ToastProvider } from './context/ToastProvider';
 export { useToast } from './hooks/useToast';
 
 // Enhanced Toast API exports
-export { smartToast, toast, toastVariants } from './api/toast';
+export { toast } from './api/toast';
 
 // Variant system exports
 export { PREDEFINED_VARIANTS, variants } from './api/variants';

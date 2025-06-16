@@ -31,6 +31,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     titleStyle,
     messageStyle,
     getMessageLines,
+    variantColors,
   } = useToastStyles(toast, theme, config || {});
 
   // Resolve progress bar configuration
@@ -112,6 +113,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
         config={config || {}}
         iconConfig={iconConfig}
         layout={layout}
+        variantColors={variantColors}
       />
 
       {/* Text Content */}

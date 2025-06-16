@@ -32,10 +32,10 @@ export const resolveToastVariant = (
     const resolvedVariant = variantManager.resolveVariant(variantName, context);
 
     // Apply any toast-specific style overrides
-    if (toast.config.variantStyle) {
+    if (toast.config.styleOverrides) {
       resolvedVariant.style = {
         ...resolvedVariant.style,
-        ...toast.config.variantStyle,
+        ...toast.config.styleOverrides,
       };
     }
 
@@ -222,31 +222,11 @@ export const getVariantBehavior = (resolvedVariant: ResolvedVariant) => {
  */
 export const selectOptimalVariant = (
   toastType: ToastType,
-  hasTitle: boolean,
-  messageLength: number,
-  theme: Theme
+  _hasTitle: boolean,
+  _messageLength: number,
+  _theme: Theme
 ): string => {
-  // Smart variant selection logic
-
-  // For glassmorphism themes, prefer glass variant
-  if (theme.name.includes('glassmorphism')) {
-    return 'glass';
-  }
-
-  // For error types with long messages, use alert variant
-  if (toastType === 'error' && messageLength > 100) {
-    return 'alert';
-  }
-
-  // For success with titles, use card variant
-  if (toastType === 'success' && hasTitle) {
-    return 'card';
-  }
-
-  // For short messages without titles, use compact
-  if (!hasTitle && messageLength < 30) {
-    return 'compact';
-  }
+  // Smart variant selection logic - only use available variants
 
   // For type-specific filled variants
   if (['success', 'error', 'warning', 'info'].includes(toastType)) {

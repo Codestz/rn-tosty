@@ -14,7 +14,7 @@ export interface VariantStyle {
   borderColor?: string;
   borderWidth?: number;
   borderStyle?: 'solid' | 'dashed' | 'dotted';
-  borderRadius?: number;
+  borderRadius?: number | string;
 
   // Text styling
   textColor?: string;
@@ -96,16 +96,6 @@ export interface ToastVariantDefinition {
 // Predefined variant names
 export type PredefinedVariantName =
   | 'default'
-  | 'minimal'
-  | 'outlined'
-  | 'filled'
-  | 'glass'
-  | 'card'
-  | 'banner'
-  | 'floating'
-  | 'compact'
-  | 'notification'
-  | 'alert'
   | 'success-filled'
   | 'error-filled'
   | 'warning-filled'

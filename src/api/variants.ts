@@ -154,16 +154,6 @@ export const PREDEFINED_VARIANTS: Record<
   PredefinedVariantName
 > = {
   'default': 'default',
-  'minimal': 'minimal',
-  'outlined': 'outlined',
-  'filled': 'filled',
-  'glass': 'glass',
-  'card': 'card',
-  'banner': 'banner',
-  'floating': 'floating',
-  'compact': 'compact',
-  'notification': 'notification',
-  'alert': 'alert',
   'success-filled': 'success-filled',
   'error-filled': 'error-filled',
   'warning-filled': 'warning-filled',
