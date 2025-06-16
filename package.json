@@ -6,9 +6,14 @@
   "types": "./lib/typescript/src/index.d.ts",
   "exports": {
     ".": {
-      "source": "./src/index.tsx",
-      "types": "./lib/typescript/src/index.d.ts",
-      "default": "./lib/module/index.js"
+      "import": {
+        "types": "./lib/typescript/src/index.d.ts",
+        "default": "./lib/module/index.js"
+      },
+      "require": {
+        "types": "./lib/typescript/src/index.d.ts",
+        "default": "./lib/commonjs/index.js"
+      }
     },
     "./package.json": "./package.json"
   },
@@ -32,7 +37,9 @@
     "!**/.*"
   ],
   "scripts": {
-    "example": "yarn workspace rn-tosty-example",
+    "example": "yarn workspace rn-tosty-example start",
+    "example:android": "yarn workspace rn-tosty-example android",
+    "example:ios": "yarn workspace rn-tosty-example ios",
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
@@ -80,13 +87,21 @@
     "react": "19.0.0",
     "react-native": "0.79.2",
     "react-native-builder-bob": "^0.40.11",
+    "react-native-safe-area-context": "^5.4.1",
     "release-it": "^17.10.0",
     "turbo": "^1.10.7",
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-safe-area-context": ">=4.0.0"
+  },
+  "dependencies": {
+    "react-native-device-info": "^14.0.4",
+    "react-native-gesture-handler": "^2.25.0",
+    "react-native-haptic-feedback": "^2.3.3",
+    "react-native-reanimated": "^3.18.0"
   },
   "workspaces": [
     "example"
