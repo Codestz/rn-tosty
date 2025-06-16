@@ -5,6 +5,7 @@ export class ToastManager {
   private static instance: ToastManager;
   private toasts: Map<string, Toast> = new Map();
   private listeners: Set<(toasts: Toast[]) => void> = new Set();
+  private dismissTimers: Map<string, NodeJS.Timeout> = new Map();
 
   private constructor() {}
 
@@ -37,20 +38,20 @@ export class ToastManager {
     this.notifyListeners();
 
     // Auto-dismiss logic
-    if (toast.config.duration !== 'permanent') {
-      const duration = this.calculateDuration(toast.config);
-      setTimeout(() => {
-        this.dismiss(id);
-      }, duration);
-    }
+    this.scheduleAutoDismiss(id, toast.config);
 
     return id;
   }
 
   dismiss(id?: string): void {
     if (id) {
+      // Clear any pending dismiss timer
+      this.clearDismissTimer(id);
       this.toasts.delete(id);
     } else {
+      // Clear all timers
+      this.dismissTimers.forEach((timer) => clearTimeout(timer));
+      this.dismissTimers.clear();
       this.toasts.clear();
     }
     this.notifyListeners();
@@ -63,6 +64,11 @@ export class ToastManager {
       toast.updatedAt = new Date();
       this.toasts.set(id, toast);
       this.notifyListeners();
+
+      // If duration was updated, reschedule auto-dismiss
+      if (config.duration !== undefined) {
+        this.scheduleAutoDismiss(id, toast.config);
+      }
     }
   }
 
@@ -77,6 +83,28 @@ export class ToastManager {
     return () => {
       this.listeners.delete(listener);
     };
+  }
+
+  private scheduleAutoDismiss(id: string, config: ToastConfig): void {
+    // Clear any existing timer for this toast
+    this.clearDismissTimer(id);
+
+    // Schedule new auto-dismiss if not permanent
+    if (config.duration !== 'permanent') {
+      const duration = this.calculateDuration(config);
+      const timer = setTimeout(() => {
+        this.dismiss(id);
+      }, duration);
+      this.dismissTimers.set(id, timer);
+    }
+  }
+
+  private clearDismissTimer(id: string): void {
+    const timer = this.dismissTimers.get(id);
+    if (timer) {
+      clearTimeout(timer);
+      this.dismissTimers.delete(id);
+    }
   }
 
   private notifyListeners(): void {

@@ -7,17 +7,67 @@ export type ToastDuration = number | 'permanent' | 'auto';
 
 export type ToastPosition = 'top' | 'center' | 'bottom' | 'smart';
 
+export type ToastVariant = 'simple' | 'styled' | 'auto';
+
+// Import types from other files
+import type { AnimationConfig, HapticConfig } from './ConfigTypes';
+import type { GestureConfig } from './GestureTypes';
+import type { CustomIconComponent, ToastTypeIconConfig } from './IconTypes';
+
 export interface ToastConfig {
   id?: string;
   title?: string;
   message: string;
   type?: ToastType;
+  variant?: ToastVariant;
   priority?: ToastPriority;
   duration?: ToastDuration;
   position?: ToastPosition;
   gestureConfig?: GestureConfig;
   hapticConfig?: HapticConfig;
   animationConfig?: AnimationConfig;
+  // Icon override for this specific toast
+  icon?: CustomIconComponent | ToastTypeIconConfig | false;
+}
+
+// Enhanced Promise API Types
+export interface PromiseToastConfig {
+  message: string;
+  title?: string;
+  icon?: CustomIconComponent | ToastTypeIconConfig | LoadingIconConfig | false;
+  duration?: ToastDuration;
+  variant?: ToastVariant;
+}
+
+export interface LoadingIconConfig {
+  type?: 'spinner' | 'dots' | 'bars' | 'pulse';
+  size?: 'small' | 'medium' | 'large' | number;
+  color?: string;
+  animated?: boolean;
+}
+
+// Promise messages can be simple strings or full configurations
+export type PromiseMessage<T = any> =
+  | string
+  | ((data: T) => string)
+  | PromiseToastConfig
+  | ((data: T) => PromiseToastConfig);
+
+export type PromiseErrorMessage =
+  | string
+  | ((error: Error) => string)
+  | PromiseToastConfig
+  | ((error: Error) => PromiseToastConfig);
+
+export interface PromiseMessages<T = any> {
+  loading: PromiseMessage<T>;
+  success: PromiseMessage<T>;
+  error: PromiseErrorMessage;
+}
+
+// Enhanced promise configuration
+export interface PromiseConfig {
+  position?: ToastPosition;
 }
 
 // Simple Toast API Methods
@@ -30,12 +80,8 @@ export interface ToastAPI {
   dismiss: (id?: string) => void;
   promise: <T>(
     promise: Promise<T>,
-    messages: {
-      loading: string;
-      success: string | ((data: T) => string);
-      error: string | ((error: Error) => string);
-    },
-    config?: Partial<ToastConfig>
+    messages: PromiseMessages<T>,
+    config?: PromiseConfig
   ) => Promise<T>;
 }
 
@@ -46,8 +92,7 @@ export interface Toast {
   updatedAt: Date;
   isVisible: boolean;
   progress: number;
+  isPromiseToast?: boolean; // Track if this is a promise toast
+  promiseState?: 'loading' | 'success' | 'error'; // Current promise state
+  parentPromiseId?: string; // For linking success/error toasts to loading toast
 }
-
-// Import types from other files
-import type { AnimationConfig, HapticConfig } from './ConfigTypes';
-import type { GestureConfig } from './GestureTypes';

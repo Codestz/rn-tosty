@@ -2,15 +2,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useToastContext } from '../context/ToastProvider';
-import { SmartPositioner } from '../services/SmartPositioner';
-import type { SafeAreaCalculation } from '../types/SafeAreaTypes';
-import type { Theme } from '../types/ThemeTypes';
-import { ToastItem } from './ToastItem';
-
-interface ToastContainerProps {
-  theme?: Theme;
-}
+import { useToastContext } from '../../context/ToastProvider';
+import { SmartPositioner } from '../../services/SmartPositioner';
+import type { SafeAreaCalculation } from '../../types/SafeAreaTypes';
+import { ToastItem } from '../ToastItem/ToastItem';
+import type { ToastContainerProps } from './ToastContainer.types';
 
 interface PositioningMap {
   top: SafeAreaCalculation | null;
@@ -146,7 +142,16 @@ export const ToastContainer: React.FC<ToastContainerProps> = ({ theme }) => {
           pointerEvents="box-none"
         >
           {toastsByPosition.top.map((toast) => (
-            <ToastItem key={toast.id} toast={toast} theme={theme} />
+            <ToastItem
+              key={toast.id}
+              toast={toast}
+              theme={theme!}
+              config={config}
+              onRemove={(id) => {
+                // Handle toast removal - this will be implemented by ToastManager
+                console.log('Remove toast:', id);
+              }}
+            />
           ))}
         </View>
       )}
@@ -166,7 +171,16 @@ export const ToastContainer: React.FC<ToastContainerProps> = ({ theme }) => {
           pointerEvents="box-none"
         >
           {toastsByPosition.bottom.map((toast) => (
-            <ToastItem key={toast.id} toast={toast} theme={theme} />
+            <ToastItem
+              key={toast.id}
+              toast={toast}
+              theme={theme!}
+              config={config}
+              onRemove={(id) => {
+                // Handle toast removal - this will be implemented by ToastManager
+                console.log('Remove toast:', id);
+              }}
+            />
           ))}
         </View>
       )}

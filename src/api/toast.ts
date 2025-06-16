@@ -1,6 +1,12 @@
 // Simple Toast API Implementation
+import { promiseToastManager } from '../services/PromiseToastManager';
 import { ToastManager } from '../services/ToastManager';
-import type { ToastAPI, ToastConfig } from '../types/ToastTypes';
+import type {
+  PromiseConfig,
+  PromiseMessages,
+  ToastAPI,
+  ToastConfig,
+} from '../types/ToastTypes';
 
 class ToastAPIImpl implements ToastAPI {
   private manager: ToastManager;
@@ -67,37 +73,10 @@ class ToastAPIImpl implements ToastAPI {
 
   promise<T>(
     promise: Promise<T>,
-    messages: {
-      loading: string;
-      success: string | ((data: T) => string);
-      error: string | ((error: Error) => string);
-    },
-    config?: Partial<ToastConfig>
+    messages: PromiseMessages<T>,
+    config?: PromiseConfig
   ): Promise<T> {
-    const loadingId = this.info(messages.loading, {
-      duration: 'permanent',
-      ...config,
-    });
-
-    return promise
-      .then((data) => {
-        this.dismiss(loadingId);
-        const successMessage =
-          typeof messages.success === 'function'
-            ? messages.success(data)
-            : messages.success;
-        this.success(successMessage, config);
-        return data;
-      })
-      .catch((error) => {
-        this.dismiss(loadingId);
-        const errorMessage =
-          typeof messages.error === 'function'
-            ? messages.error(error)
-            : messages.error;
-        this.error(errorMessage, config);
-        throw error;
-      });
+    return promiseToastManager.handlePromise(promise, messages, config);
   }
 }
 
