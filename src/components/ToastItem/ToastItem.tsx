@@ -1,5 +1,5 @@
-// Toast Item - Individual toast component with beautiful theme support
-import React, { useEffect } from 'react';
+// Toast Item - Modern component with advanced variant system
+import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, {
   runOnJS,
@@ -13,8 +13,15 @@ import {
   getIconMargin,
   getTextAlignmentStyle,
 } from '../../utils/layoutUtils';
+import {
+  getVariantBehavior,
+  getVariantIconConfig,
+  getVariantTextStyles,
+  resolveToastVariantSmart,
+  variantStyleToRNStyle,
+} from '../../utils/variantResolver';
 import { ToastIcon } from '../ToastIcon/ToastIcon';
-import type { ToastColors, ToastItemProps } from './ToastItem.types';
+import type { ToastItemProps } from './ToastItem.types';
 
 export const ToastItem: React.FC<ToastItemProps> = ({
   toast,
@@ -26,114 +33,101 @@ export const ToastItem: React.FC<ToastItemProps> = ({
   const translateY = useSharedValue(-50);
   const scale = useSharedValue(0.8);
 
-  // Calculate layout configuration
+  // Resolve variant configuration with smart defaults
+  const resolvedVariant = useMemo(() => {
+    return resolveToastVariantSmart(toast, theme);
+  }, [toast, theme]);
+
+  // Get variant-based configurations
+  const variantBehavior = useMemo(() => {
+    return getVariantBehavior(resolvedVariant);
+  }, [resolvedVariant]);
+
+  const iconConfig = useMemo(() => {
+    return getVariantIconConfig(resolvedVariant);
+  }, [resolvedVariant]);
+
+  // Calculate layout configuration (keeping existing layout system for advanced positioning)
   const layout = calculateLayout(config?.layout, theme);
 
   const handleDismiss = React.useCallback(() => {
-    opacity.value = withTiming(0, { duration: 200 });
-    translateY.value = withTiming(-30, { duration: 200 });
-    scale.value = withTiming(0.9, { duration: 200 }, () => {
+    const exitDuration = resolvedVariant.style.animationDuration * 0.7; // Faster exit
+
+    opacity.value = withTiming(0, { duration: exitDuration });
+    translateY.value = withTiming(-30, { duration: exitDuration });
+    scale.value = withTiming(0.9, { duration: exitDuration }, () => {
       runOnJS(onRemove)(toast.id);
     });
-  }, [opacity, translateY, scale, onRemove, toast.id]);
+  }, [
+    opacity,
+    translateY,
+    scale,
+    onRemove,
+    toast.id,
+    resolvedVariant.style.animationDuration,
+  ]);
 
   useEffect(() => {
-    // Entrance animation
-    opacity.value = withTiming(1, { duration: 300 });
+    // Entrance animation with variant-specific configuration
+    const animationDuration = resolvedVariant.style.animationDuration;
+    const easing = resolvedVariant.style.animationEasing;
+
+    opacity.value = withTiming(1, { duration: animationDuration });
+
+    // Use spring animation for more natural feel
     translateY.value = withSpring(0, {
-      damping: 15,
-      stiffness: 150,
+      damping: easing === 'spring' ? 12 : 15,
+      stiffness: easing === 'spring' ? 120 : 150,
     });
     scale.value = withSpring(1, {
-      damping: 15,
-      stiffness: 150,
+      damping: easing === 'spring' ? 12 : 15,
+      stiffness: easing === 'spring' ? 120 : 150,
     });
 
-    // Auto-dismiss timer
+    // Auto-dismiss timer with variant-specific behavior
+    const duration = toast.config.duration || variantBehavior.defaultDuration;
+
     if (
-      toast.config.duration &&
-      typeof toast.config.duration === 'number' &&
-      toast.config.duration > 0
+      variantBehavior.autoDismiss &&
+      typeof duration === 'number' &&
+      duration > 0
     ) {
       const timer = setTimeout(() => {
         handleDismiss();
-      }, toast.config.duration);
+      }, duration);
 
       return () => clearTimeout(timer);
     }
 
     return () => {};
-  }, [opacity, translateY, scale, toast.config.duration, handleDismiss]);
+  }, [
+    opacity,
+    translateY,
+    scale,
+    toast.config.duration,
+    variantBehavior.autoDismiss,
+    variantBehavior.defaultDuration,
+    resolvedVariant.style.animationDuration,
+    resolvedVariant.style.animationEasing,
+    handleDismiss,
+  ]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
     transform: [{ translateY: translateY.value }, { scale: scale.value }],
   }));
 
-  // Determine if we should show icon
-  const shouldShowIcon = toast.config.variant === 'styled';
+  // Create container style using modern variant system
+  const variantContainerStyle = variantStyleToRNStyle(
+    resolvedVariant.style,
+    theme
+  );
 
-  // Get colors based on toast type and theme
-  const getToastColors = (): ToastColors => {
-    const { type } = toast.config;
-    const isGlassmorphism = theme.name.includes('glassmorphism');
-
-    if (isGlassmorphism) {
-      // For glassmorphism, use semi-transparent surface with colored borders
-      return {
-        background: theme.colors.surface,
-        text: theme.colors.onSurface,
-        border: theme.colors.border,
-      };
-    }
-
-    // For other themes, use type-specific colored backgrounds
-    switch (type) {
-      case 'success':
-        return {
-          background: theme.colors.success,
-          text: '#FFFFFF',
-          border: theme.colors.success,
-        };
-      case 'error':
-        return {
-          background: theme.colors.error,
-          text: '#FFFFFF',
-          border: theme.colors.error,
-        };
-      case 'warning':
-        return {
-          background: theme.colors.warning,
-          text: '#FFFFFF',
-          border: theme.colors.warning,
-        };
-      case 'info':
-        return {
-          background: theme.colors.info,
-          text: '#FFFFFF',
-          border: theme.colors.info,
-        };
-      default:
-        return {
-          background: theme.colors.primary,
-          text: '#FFFFFF',
-          border: theme.colors.primary,
-        };
-    }
-  };
-
-  const colors = getToastColors();
-
-  // Create container style with layout-aware padding and proper theming
   const containerStyle = [
     styles.container,
+    variantContainerStyle,
+    // Apply layout-specific configurations
     {
-      backgroundColor: colors.background,
-      borderColor: colors.border,
-      borderWidth: theme.name.includes('glassmorphism') ? 1 : 0,
-      borderRadius: theme.borderRadius.lg,
-      paddingHorizontal: layout.spacing.containerPadding,
-      paddingVertical: layout.spacing.containerPadding * 0.75,
       flexDirection: layout.flexDirection,
     },
   ];
@@ -146,43 +140,75 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     },
   ];
 
-  // Create text styles with layout-aware alignment and proper colors
+  // Create text styles using variant system
   const titleStyle = [
     styles.title,
     {
-      color: colors.text,
       fontSize: theme.typography.titleFontSize,
       fontWeight: theme.typography.fontWeight.semiBold,
       lineHeight: theme.typography.titleLineHeight,
     },
+    getVariantTextStyles(resolvedVariant.style, true),
     getTextAlignmentStyle(layout.textAlignment),
   ];
 
   const messageStyle = [
     styles.message,
     {
-      color: colors.text,
       fontSize: theme.typography.bodyFontSize,
       fontWeight: theme.typography.fontWeight.regular,
       lineHeight: theme.typography.bodyLineHeight,
     },
+    getVariantTextStyles(resolvedVariant.style, false),
     getTextAlignmentStyle(layout.textAlignment),
   ];
 
+  // Determine number of lines based on variant intelligently
+  const getMessageLines = (): number => {
+    switch (resolvedVariant.name) {
+      case 'minimal':
+      case 'compact':
+        return 1;
+      case 'banner':
+        return 2;
+      case 'card':
+      case 'alert':
+        return 4;
+      default:
+        return 3;
+    }
+  };
+
+  // Handle tap interaction based on variant behavior
+  const handleTap = React.useCallback(() => {
+    if (variantBehavior.dismissOnTap) {
+      handleDismiss();
+    }
+  }, [variantBehavior.dismissOnTap, handleDismiss]);
+
   return (
-    <Animated.View style={[animatedStyle, containerStyle]}>
-      {/* Icon - positioned based on layout configuration */}
-      {shouldShowIcon && (
+    <Animated.View
+      style={[animatedStyle, containerStyle]}
+      onTouchEnd={handleTap}
+    >
+      {/* Icon - positioned based on variant configuration */}
+      {iconConfig.shouldShowIcon && iconConfig.iconPosition !== 'none' && (
         <View
           style={[
             styles.iconContainer,
-            getIconMargin(layout.iconPosition, layout.spacing),
+            getIconMargin(
+              iconConfig.iconPosition === 'left' ? 'left' : 'right',
+              layout.spacing
+            ),
+            // Icon positioning for 'top' position
+            iconConfig.iconPosition === 'top' && styles.iconTop,
           ]}
         >
           <ToastIcon
             type={toast.config.type || 'info'}
             theme={theme}
-            size="medium"
+            size={iconConfig.iconSize}
+            color={iconConfig.iconColor}
             iconConfig={config?.icons}
             toastIconOverride={toast.config.icon}
           />
@@ -190,16 +216,19 @@ export const ToastItem: React.FC<ToastItemProps> = ({
       )}
 
       {/* Text Content */}
-      <View style={textContainerStyle}>
+      <View
+        style={[
+          textContainerStyle,
+          // Adjust text container for top icon position
+          iconConfig.iconPosition === 'top' && styles.textContainerWithTopIcon,
+        ]}
+      >
         {toast.config.title && (
           <Text style={titleStyle} numberOfLines={2}>
             {toast.config.title}
           </Text>
         )}
-        <Text
-          style={messageStyle}
-          numberOfLines={toast.config.variant === 'simple' ? 1 : 3}
-        >
+        <Text style={messageStyle} numberOfLines={getMessageLines()}>
           {toast.config.message}
         </Text>
       </View>
@@ -211,23 +240,23 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 4,
     marginHorizontal: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
     alignItems: 'center',
   },
   iconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  iconTop: {
+    alignSelf: 'center',
+    marginBottom: 8,
+  },
   textContainer: {
     flex: 1,
     justifyContent: 'center',
+  },
+  textContainerWithTopIcon: {
+    alignItems: 'center',
+    textAlign: 'center',
   },
   title: {
     marginBottom: 2,

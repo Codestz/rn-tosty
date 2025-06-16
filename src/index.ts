@@ -2,6 +2,12 @@
 export { ToastProvider } from './context/ToastProvider';
 export { useToast } from './hooks/useToast';
 
+// Enhanced Toast API exports
+export { smartToast, toast, toastVariants } from './api/toast';
+
+// Variant system exports
+export { PREDEFINED_VARIANTS, variants } from './api/variants';
+
 // Type exports
 export type {
   AnimationConfig,
@@ -26,6 +32,18 @@ export type {
   ToastType,
   ToastVariant,
 } from './types/ToastTypes';
+
+// Variant system type exports
+export type {
+  CustomVariantConfig,
+  PredefinedVariantName,
+  ResolvedVariant,
+  ToastVariantDefinition,
+  VariantBehavior,
+  VariantBuilder,
+  VariantName,
+  VariantStyle,
+} from './types/VariantTypes';
 
 // Icon configuration exports
 export type {

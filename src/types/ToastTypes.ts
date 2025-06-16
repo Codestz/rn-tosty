@@ -7,7 +7,8 @@ export type ToastDuration = number | 'permanent' | 'auto';
 
 export type ToastPosition = 'top' | 'center' | 'bottom' | 'smart';
 
-export type ToastVariant = 'simple' | 'styled' | 'auto';
+// Modern variant system - only variant names (predefined or custom)
+export type ToastVariant = string;
 
 // Import types from other files
 import type { AnimationConfig, HapticConfig } from './ConfigTypes';
@@ -28,6 +29,8 @@ export interface ToastConfig {
   animationConfig?: AnimationConfig;
   // Icon override for this specific toast
   icon?: CustomIconComponent | ToastTypeIconConfig | false;
+  // Variant-specific style overrides
+  variantStyle?: Partial<import('./VariantTypes').VariantStyle>;
 }
 
 // Enhanced Promise API Types
@@ -70,7 +73,7 @@ export interface PromiseConfig {
   position?: ToastPosition;
 }
 
-// Simple Toast API Methods
+// Modern Toast API Methods
 export interface ToastAPI {
   success: (message: string, config?: Partial<ToastConfig>) => string;
   error: (message: string, config?: Partial<ToastConfig>) => string;
@@ -83,6 +86,12 @@ export interface ToastAPI {
     messages: PromiseMessages<T>,
     config?: PromiseConfig
   ) => Promise<T>;
+  // New variant-aware methods
+  show: (
+    message: string,
+    variant: ToastVariant,
+    config?: Partial<ToastConfig>
+  ) => string;
 }
 
 export interface Toast {

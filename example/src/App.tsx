@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,350 +11,249 @@ import {
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import type { BaseIconProps, CustomIconComponent } from 'rn-tosty';
 import {
-  createIconConfig,
+  smartToast,
   Themes,
-  ToastLayoutPresets,
-  ToastLoadingIcon,
   ToastProvider,
+  toastVariants,
   useToast,
+  variants,
 } from 'rn-tosty';
 
-// Mock API functions for testing promise toasts
-const mockApiSuccess = (
-  delay: number = 2000
-): Promise<{ id: number; name: string }> =>
-  new Promise((resolve) =>
-    setTimeout(() => resolve({ id: 1, name: 'John Doe' }), delay)
-  );
-
-const mockApiError = (delay: number = 2000): Promise<never> =>
-  new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('Network error occurred')), delay)
-  );
-
-// Custom Heart Icon Component
-const CustomHeartIcon: CustomIconComponent = ({
-  size,
-  color,
-}: BaseIconProps) => {
-  return (
-    <View
-      style={{
-        width: size,
-        height: size,
-        backgroundColor: color,
-        borderRadius: size / 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Text style={{ color: 'black', fontSize: size * 0.6 }}>♥</Text>
-    </View>
-  );
-};
-
-// Custom Star Icon Component
-const CustomStarIcon: CustomIconComponent = ({
-  size,
-  color,
-}: BaseIconProps) => {
-  return (
-    <View
-      style={{
-        width: size,
-        height: size,
-        backgroundColor: color,
-        borderRadius: size / 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Text style={{ color: 'white', fontSize: size * 0.6 }}>⭐</Text>
-    </View>
-  );
-};
-
-// Custom Rocket Icon Component
-const CustomRocketIcon: CustomIconComponent = ({
-  size,
-  color,
-}: BaseIconProps) => {
-  return (
-    <View
-      style={{
-        width: size,
-        height: size,
-        backgroundColor: color,
-        borderRadius: size / 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Text style={{ color: 'white', fontSize: size * 0.6 }}>🚀</Text>
-    </View>
-  );
-};
-
-// Custom Loading Icon using ToastLoadingIcon
-const CustomSpinnerIcon: CustomIconComponent = ({ size, color, theme }) => {
-  return (
-    <ToastLoadingIcon
-      type="spinner"
-      size={size}
-      color={color}
-      theme={theme}
-      animated={true}
-    />
-  );
-};
-
-const CustomDotsIcon: CustomIconComponent = ({ size, color, theme }) => {
-  return (
-    <ToastLoadingIcon
-      type="dots"
-      size={size}
-      color={color}
-      theme={theme}
-      animated={true}
-    />
-  );
-};
-
-function ToastDemo(): React.JSX.Element {
+function VariantsDemo(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  const { success, error, info, warning, promise } = useToast();
+  const { success, error, info, warning } = useToast();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? '#000000' : '#ffffff',
     flex: 1,
   };
 
-  // Global icon configuration examples
-  const showGlobalHeartIcon = () => {
-    success('Using global heart icon configuration!', {
-      position: 'top',
-      variant: 'styled',
-      title: 'Global Icon',
-    });
-  };
-
-  const showDefaultErrorIcon = () => {
-    error('Using default error icon', {
-      position: 'bottom',
-      variant: 'styled',
-      title: 'Default Icon',
-    });
-  };
-
-  // Per-toast icon override examples
-  const showCustomStarIcon = () => {
-    success('This success toast uses a custom star icon!', {
-      title: 'Custom Star Icon',
-      position: 'top',
-      variant: 'styled',
-      icon: CustomStarIcon, // Override the global heart icon
-    });
-  };
-
-  const showCustomRocketIcon = () => {
-    error('This error toast uses a rocket icon instead!', {
-      title: 'Custom Rocket Icon',
-      position: 'center',
-      variant: 'styled',
-      icon: CustomRocketIcon, // Override the default error icon
-    });
-  };
-
-  const showNoIcon = () => {
-    info('This toast has no icon at all', {
-      title: 'No Icon',
-      position: 'bottom',
-      variant: 'styled',
-      icon: false, // Disable icon for this toast
-    });
-  };
-
-  const showIconWithCustomConfig = () => {
-    warning('Custom icon with large size and no animation', {
-      title: 'Custom Config',
-      position: 'smart',
-      variant: 'styled',
-      icon: {
-        component: CustomStarIcon,
-        size: 'large',
-        animated: false,
-        color: '#FFD700', // Gold color
+  // Register custom variants on component mount
+  useEffect(() => {
+    // Example 1: Simple custom variant extending an existing one
+    variants.registerCustom({
+      name: 'my-success-card',
+      extends: 'card',
+      displayName: 'My Success Card',
+      description: 'Custom success card with brand colors',
+      style: {
+        backgroundColor: '#E8F5E8', // Light green background
+        borderColor: '#4CAF50',
+        borderWidth: 2,
+        iconColor: '#2E7D32',
+        textColor: '#1B5E20',
+        titleColor: '#2E7D32',
+      },
+      behavior: {
+        defaultDuration: 6000,
+        hapticFeedback: 'medium',
       },
     });
-  };
 
-  // Loading icon examples
-  const showSpinnerLoadingIcon = () => {
-    info('Loading with spinner animation', {
-      title: 'Spinner Loading',
-      position: 'top',
-      variant: 'styled',
-      icon: CustomSpinnerIcon,
-      duration: 5000,
-    });
-  };
-
-  const showDotsLoadingIcon = () => {
-    info('Loading with dots animation', {
-      title: 'Dots Loading',
-      position: 'center',
-      variant: 'styled',
-      icon: CustomDotsIcon,
-      duration: 5000,
-    });
-  };
-
-  const showBarsLoadingIcon = () => {
-    info('Loading with bars animation', {
-      title: 'Bars Loading',
-      position: 'bottom',
-      variant: 'styled',
-      icon: ({ size, color, theme }) => (
-        <ToastLoadingIcon
-          type="bars"
-          size={size}
-          color={color}
-          theme={theme}
-          animated={true}
-        />
-      ),
-      duration: 5000,
-    });
-  };
-
-  const showPulseLoadingIcon = () => {
-    info('Loading with pulse animation', {
-      title: 'Pulse Loading',
-      position: 'smart',
-      variant: 'styled',
-      icon: ({ size, color, theme }) => (
-        <ToastLoadingIcon
-          type="pulse"
-          size={size}
-          color={color}
-          theme={theme}
-          animated={true}
-        />
-      ),
-      duration: 5000,
-    });
-  };
-
-  // Enhanced Promise API examples
-  const handleBasicPromise = () => {
-    promise(mockApiSuccess(), {
-      loading: 'Saving user...',
-      success: 'User saved successfully!',
-      error: 'Failed to save user',
-    });
-  };
-
-  const handleBasicPromiseError = () => {
-    promise(mockApiError(), {
-      loading: 'Deleting user...',
-      success: 'User deleted successfully!',
-      error: 'Failed to delete user',
-    });
-  };
-
-  const handleEnhancedPromise = () => {
-    promise(mockApiSuccess(), {
-      loading: {
-        message: 'Processing payment...',
-        icon: { type: 'spinner', size: 'large' },
+    // Example 2: Complex custom variant with gradient effect
+    variants.registerCustom({
+      name: 'gradient-hero',
+      displayName: 'Gradient Hero',
+      description: 'Eye-catching gradient variant for important messages',
+      style: {
+        backgroundColor: '#667eea', // Fallback color
+        backgroundGradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        textColor: '#FFFFFF',
+        titleColor: '#FFFFFF',
+        iconColor: '#FFFFFF',
+        borderRadius: 20,
+        padding: { horizontal: 24, vertical: 18 },
+        shadowColor: '#667eea',
+        shadowOpacity: 0.3,
+        shadowRadius: 15,
+        shadowOffset: { x: 0, y: 8 },
+        elevation: 10,
+        iconPosition: 'left',
+        iconSize: 'large',
       },
-      success: (data: { id: number; name: string }) => ({
-        message: `Payment processed for ${data.name}!`,
-        title: 'Success',
-      }),
-      error: {
-        message: 'Payment failed. Please try again.',
-        title: 'Error',
+      behavior: {
+        defaultDuration: 8000,
+        hapticFeedback: 'heavy',
+        priority: 'high',
       },
     });
+
+    // Example 3: Minimal custom variant
+    variants.registerCustom({
+      name: 'ultra-minimal',
+      displayName: 'Ultra Minimal',
+      description: 'Extremely clean variant with no visual distractions',
+      style: {
+        backgroundColor: 'transparent',
+        textColor: 'theme.colors.onSurface',
+        borderWidth: 0,
+        borderRadius: 0,
+        padding: { horizontal: 8, vertical: 6 },
+        iconPosition: 'none',
+        shadowOpacity: 0,
+        elevation: 0,
+      },
+      behavior: {
+        defaultDuration: 2000,
+        hapticFeedback: 'none',
+      },
+      iconConfig: {
+        showIcon: false,
+      },
+    });
+
+    // Example 4: Using the builder pattern
+    const builderVariant = variants
+      .create()
+      .setName('builder-example')
+      .setDisplayName('Builder Example')
+      .setBackgroundColor('#FF6B6B')
+      .setTextColor('#FFFFFF')
+      .setBorderRadius(25)
+      .setPadding({ horizontal: 20, vertical: 14 })
+      .setIconPosition('right')
+      .setIconSize('medium')
+      .setDefaultDuration(5000)
+      .setHapticFeedback('medium')
+      .build();
+
+    variants.register(builderVariant);
+  }, []);
+
+  // Core Variants Demo
+  const showDefaultVariant = () => {
+    success('This is the default variant', { variant: 'default' });
   };
 
-  const handleDotsAnimation = () => {
-    promise(mockApiSuccess(3000), {
-      loading: {
-        title: 'Uploading files...',
-        message: 'Waiting for files to upload...',
-        icon: { type: 'dots', size: 'medium' },
-      },
-      success: 'Files uploaded successfully!',
-      error: 'Upload failed',
+  const showMinimalVariant = () => {
+    info('Clean and minimal design', { variant: 'minimal' });
+  };
+
+  const showOutlinedVariant = () => {
+    warning('Outlined variant with borders', { variant: 'outlined' });
+  };
+
+  const showFilledVariant = () => {
+    error('Filled variant with solid colors', { variant: 'filled' });
+  };
+
+  // Special Effect Variants
+  const showGlassVariant = () => {
+    info('Glassmorphism effect with transparency', { variant: 'glass' });
+  };
+
+  const showCardVariant = () => {
+    success('Elevated card design with shadows', {
+      variant: 'card',
+      title: 'Card Style',
     });
   };
 
-  const handleBarsAnimation = () => {
-    promise(mockApiSuccess(3000), {
-      loading: {
-        message: 'Analyzing data...',
-        icon: { type: 'bars', size: 'medium' },
-      },
-      success: 'Analysis complete!',
-      error: 'Analysis failed',
+  const showFloatingVariant = () => {
+    warning('Floating above content', { variant: 'floating' });
+  };
+
+  const showBannerVariant = () => {
+    info('Full-width banner notification', { variant: 'banner' });
+  };
+
+  // Utility Variants
+  const showCompactVariant = () => {
+    success('Space-efficient compact design', { variant: 'compact' });
+  };
+
+  const showNotificationVariant = () => {
+    info('System notification style', { variant: 'notification' });
+  };
+
+  const showAlertVariant = () => {
+    error('High-priority alert with emphasis', {
+      variant: 'alert',
+      title: 'Important Alert',
     });
   };
 
-  const handlePulseAnimation = () => {
-    promise(mockApiSuccess(3000), {
-      loading: {
-        message: 'Syncing data...',
-        icon: { type: 'pulse', size: 'medium' },
-      },
-      success: 'Data synced successfully!',
-      error: 'Sync failed',
+  // Type-Specific Filled Variants
+  const showSuccessFilled = () => {
+    success('Success with filled background', { variant: 'success-filled' });
+  };
+
+  const showErrorFilled = () => {
+    error('Error with filled background', { variant: 'error-filled' });
+  };
+
+  const showWarningFilled = () => {
+    warning('Warning with filled background', { variant: 'warning-filled' });
+  };
+
+  const showInfoFilled = () => {
+    info('Info with filled background', { variant: 'info-filled' });
+  };
+
+  // Custom Variants Demo
+  const showCustomSuccessCard = () => {
+    success('Custom success card variant!', {
+      variant: 'my-success-card',
+      title: 'Custom Variant',
     });
   };
 
-  const handleCustomConfig = () => {
-    promise(
-      mockApiSuccess(4000),
-      {
-        loading: {
-          message: 'Generating report...',
-          title: 'Please wait',
-          icon: { type: 'spinner', size: 'large' },
-        },
-        success: {
-          message: 'Report generated successfully!',
-          title: 'Success',
-        },
-        error: {
-          message: 'Failed to generate report',
-          title: 'Error',
-        },
-      },
-      {
-        position: 'center',
-      }
+  const showGradientHero = () => {
+    info('Beautiful gradient hero variant', {
+      variant: 'gradient-hero',
+      title: '🌟 Hero Message',
+    });
+  };
+
+  const showUltraMinimal = () => {
+    info('Ultra minimal - no distractions', { variant: 'ultra-minimal' });
+  };
+
+  const showBuilderExample = () => {
+    warning('Created with builder pattern', {
+      variant: 'builder-example',
+      title: 'Builder Pattern',
+    });
+  };
+
+  // Smart Auto-Selection Demo
+  const showSmartShort = () => {
+    smartToast.auto('Short message', 'success');
+  };
+
+  const showSmartLong = () => {
+    smartToast.auto(
+      'This is a much longer message that will automatically get a different variant based on its length and content',
+      'info'
     );
   };
 
-  const handleDynamicMessages = () => {
-    promise(mockApiSuccess(), {
-      loading: 'Loading user data...',
-      success: (data: { id: number; name: string }) =>
-        `Welcome back, ${data.name}!`,
-      error: (error: Error) => `Error: ${error.message}`,
+  const showSmartWithTitle = () => {
+    smartToast.auto('Message with title', 'warning', {
+      title: 'Smart Selection',
     });
+  };
+
+  // Variant-Specific API Demo
+  const showVariantAPI = () => {
+    // Using the toastVariants API for direct variant access
+    setTimeout(() => toastVariants.card('Using variant-specific API'), 100);
+    setTimeout(() => toastVariants.glass('Glass variant via API'), 600);
+    setTimeout(() => toastVariants.floating('Floating variant via API'), 1100);
   };
 
   return (
     <SafeAreaView style={backgroundStyle}>
-      <View style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <Text
           style={[styles.title, { color: isDarkMode ? '#ffffff' : '#000000' }]}
         >
-          🍞 rn-tosty
+          🍞 Toast Variants Demo
         </Text>
 
         <Text
@@ -362,243 +262,247 @@ function ToastDemo(): React.JSX.Element {
             { color: isDarkMode ? '#cccccc' : '#666666' },
           ]}
         >
-          Icons + Loading Animations + Enhanced Promise API
+          Explore 15 predefined + custom variants
         </Text>
 
-        {/* Global Icon Configuration */}
+        {/* Core Variants */}
         <Text
           style={[
             styles.sectionTitle,
             { color: isDarkMode ? '#ffffff' : '#000000' },
           ]}
         >
-          🌍 Global Icon Configuration
+          🎨 Core Variants
         </Text>
-        <View style={styles.buttonRow}>
+        <View style={styles.buttonGrid}>
+          <TouchableOpacity
+            style={[styles.button, styles.defaultButton]}
+            onPress={showDefaultVariant}
+          >
+            <Text style={styles.buttonText}>Default</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.minimalButton]}
+            onPress={showMinimalVariant}
+          >
+            <Text style={styles.buttonText}>Minimal</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.outlinedButton]}
+            onPress={showOutlinedVariant}
+          >
+            <Text style={styles.buttonText}>Outlined</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.filledButton]}
+            onPress={showFilledVariant}
+          >
+            <Text style={styles.buttonText}>Filled</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Special Effects */}
+        <Text
+          style={[
+            styles.sectionTitle,
+            { color: isDarkMode ? '#ffffff' : '#000000' },
+          ]}
+        >
+          ✨ Special Effects
+        </Text>
+        <View style={styles.buttonGrid}>
+          <TouchableOpacity
+            style={[styles.button, styles.glassButton]}
+            onPress={showGlassVariant}
+          >
+            <Text style={styles.buttonText}>Glass</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.cardButton]}
+            onPress={showCardVariant}
+          >
+            <Text style={styles.buttonText}>Card</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.floatingButton]}
+            onPress={showFloatingVariant}
+          >
+            <Text style={styles.buttonText}>Floating</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.bannerButton]}
+            onPress={showBannerVariant}
+          >
+            <Text style={styles.buttonText}>Banner</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Utility Variants */}
+        <Text
+          style={[
+            styles.sectionTitle,
+            { color: isDarkMode ? '#ffffff' : '#000000' },
+          ]}
+        >
+          🔧 Utility Variants
+        </Text>
+        <View style={styles.buttonGrid}>
+          <TouchableOpacity
+            style={[styles.button, styles.compactButton]}
+            onPress={showCompactVariant}
+          >
+            <Text style={styles.buttonText}>Compact</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.notificationButton]}
+            onPress={showNotificationVariant}
+          >
+            <Text style={styles.buttonText}>Notification</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.alertButton]}
+            onPress={showAlertVariant}
+          >
+            <Text style={styles.buttonText}>Alert</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Type-Specific Filled */}
+        <Text
+          style={[
+            styles.sectionTitle,
+            { color: isDarkMode ? '#ffffff' : '#000000' },
+          ]}
+        >
+          🎯 Type-Specific Filled
+        </Text>
+        <View style={styles.buttonGrid}>
           <TouchableOpacity
             style={[styles.button, styles.successButton]}
-            onPress={showGlobalHeartIcon}
+            onPress={showSuccessFilled}
           >
-            <Text style={styles.buttonText}>♥ Global Heart</Text>
+            <Text style={styles.buttonText}>Success Filled</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.button, styles.errorButton]}
-            onPress={showDefaultErrorIcon}
+            onPress={showErrorFilled}
           >
-            <Text style={styles.buttonText}>❌ Default Error</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Per-Toast Icon Overrides */}
-        <Text
-          style={[
-            styles.sectionTitle,
-            { color: isDarkMode ? '#ffffff' : '#000000' },
-          ]}
-        >
-          🎯 Per-Toast Icon Overrides
-        </Text>
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={[styles.button, styles.successButton]}
-            onPress={showCustomStarIcon}
-          >
-            <Text style={styles.buttonText}>⭐ Custom Star</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, styles.errorButton]}
-            onPress={showCustomRocketIcon}
-          >
-            <Text style={styles.buttonText}>🚀 Custom Rocket</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Loading Animations */}
-        <Text
-          style={[
-            styles.sectionTitle,
-            { color: isDarkMode ? '#ffffff' : '#000000' },
-          ]}
-        >
-          🔄 Loading Animations
-        </Text>
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={[styles.button, styles.infoButton]}
-            onPress={showSpinnerLoadingIcon}
-          >
-            <Text style={styles.buttonText}>🌀 Spinner</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, styles.infoButton]}
-            onPress={showDotsLoadingIcon}
-          >
-            <Text style={styles.buttonText}>⚫ Dots</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={[styles.button, styles.infoButton]}
-            onPress={showBarsLoadingIcon}
-          >
-            <Text style={styles.buttonText}>📊 Bars</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, styles.infoButton]}
-            onPress={showPulseLoadingIcon}
-          >
-            <Text style={styles.buttonText}>💫 Pulse</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Advanced Icon Configuration */}
-        <Text
-          style={[
-            styles.sectionTitle,
-            { color: isDarkMode ? '#ffffff' : '#000000' },
-          ]}
-        >
-          ⚙️ Advanced Configuration
-        </Text>
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={[styles.button, styles.warningButton]}
-            onPress={showNoIcon}
-          >
-            <Text style={styles.buttonText}>🚫 No Icon</Text>
+            <Text style={styles.buttonText}>Error Filled</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.button, styles.warningButton]}
-            onPress={showIconWithCustomConfig}
+            onPress={showWarningFilled}
           >
-            <Text style={styles.buttonText}>⚙️ Custom Config</Text>
+            <Text style={styles.buttonText}>Warning Filled</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.infoButton]}
+            onPress={showInfoFilled}
+          >
+            <Text style={styles.buttonText}>Info Filled</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Enhanced Promise API Examples */}
+        {/* Custom Variants */}
         <Text
           style={[
             styles.sectionTitle,
             { color: isDarkMode ? '#ffffff' : '#000000' },
           ]}
         >
-          🚀 Enhanced Promise API
+          🛠️ Custom Variants
         </Text>
-        <View style={styles.buttonRow}>
+        <View style={styles.buttonGrid}>
           <TouchableOpacity
-            style={[styles.button, styles.promiseButton]}
-            onPress={handleBasicPromise}
+            style={[styles.button, styles.customButton]}
+            onPress={showCustomSuccessCard}
           >
-            <Text style={styles.buttonText}>✅ Basic Success</Text>
+            <Text style={styles.buttonText}>Custom Success</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.button, styles.promiseButton]}
-            onPress={handleBasicPromiseError}
+            style={[styles.button, styles.gradientButton]}
+            onPress={showGradientHero}
           >
-            <Text style={styles.buttonText}>❌ Basic Error</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={[styles.button, styles.promiseButton]}
-            onPress={handleEnhancedPromise}
-          >
-            <Text style={styles.buttonText}>💳 Enhanced</Text>
+            <Text style={styles.buttonText}>Gradient Hero</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.button, styles.promiseButton]}
-            onPress={handleDynamicMessages}
+            style={[styles.button, styles.ultraMinimalButton]}
+            onPress={showUltraMinimal}
           >
-            <Text style={styles.buttonText}>🔄 Dynamic</Text>
+            <Text style={styles.buttonText}>Ultra Minimal</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.builderButton]}
+            onPress={showBuilderExample}
+          >
+            <Text style={styles.buttonText}>Builder Pattern</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Promise Loading Animations */}
+        {/* Smart Auto-Selection */}
         <Text
           style={[
             styles.sectionTitle,
             { color: isDarkMode ? '#ffffff' : '#000000' },
           ]}
         >
-          🎬 Promise Loading Animations
+          🧠 Smart Auto-Selection
         </Text>
-        <View style={styles.buttonRow}>
+        <View style={styles.buttonGrid}>
           <TouchableOpacity
-            style={[styles.button, styles.promiseButton]}
-            onPress={handleDotsAnimation}
+            style={[styles.button, styles.smartButton]}
+            onPress={showSmartShort}
           >
-            <Text style={styles.buttonText}>⚫ Dots</Text>
+            <Text style={styles.buttonText}>Smart Short</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.button, styles.promiseButton]}
-            onPress={handleBarsAnimation}
+            style={[styles.button, styles.smartButton]}
+            onPress={showSmartLong}
           >
-            <Text style={styles.buttonText}>📊 Bars</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={[styles.button, styles.promiseButton]}
-            onPress={handlePulseAnimation}
-          >
-            <Text style={styles.buttonText}>💫 Pulse</Text>
+            <Text style={styles.buttonText}>Smart Long</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.button, styles.promiseButton]}
-            onPress={handleCustomConfig}
+            style={[styles.button, styles.smartButton]}
+            onPress={showSmartWithTitle}
           >
-            <Text style={styles.buttonText}>⚙️ Custom</Text>
+            <Text style={styles.buttonText}>Smart + Title</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Original Promise Example */}
+        {/* API Showcase */}
         <Text
           style={[
             styles.sectionTitle,
             { color: isDarkMode ? '#ffffff' : '#000000' },
           ]}
         >
-          🔄 Original Promise Example
+          🚀 Variant-Specific API
         </Text>
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={[styles.button, styles.promiseButton]}
-            onPress={() => {
-              const promiseToResolve = new Promise((resolve, reject) => {
-                setTimeout(() => {
-                  Math.random() > 0.5 ? resolve('Success!') : reject('Failed!');
-                }, 2000);
-              });
+        <TouchableOpacity
+          style={[styles.button, styles.apiButton, styles.fullWidth]}
+          onPress={showVariantAPI}
+        >
+          <Text style={styles.buttonText}>Show Multiple Variants</Text>
+        </TouchableOpacity>
 
-              promise(
-                promiseToResolve,
-                {
-                  loading: 'Processing...',
-                  success: 'Done!',
-                  error: 'Failed!',
-                },
-                {
-                  position: 'bottom',
-                }
-              );
-            }}
-          >
-            <Text style={styles.buttonText}>⏳ Random Promise</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+        <View style={styles.footer} />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -606,11 +510,13 @@ function ToastDemo(): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  scrollContent: {
     padding: 20,
-    justifyContent: 'center',
+    paddingBottom: 40, // Extra padding at bottom for better scrolling
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 8,
@@ -625,38 +531,25 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 12,
-    marginTop: 20,
+    marginTop: 24,
   },
-  buttonRow: {
+  buttonGrid: {
     flexDirection: 'row',
-    gap: 12,
+    flexWrap: 'wrap',
+    gap: 8,
     marginBottom: 8,
   },
   button: {
     flex: 1,
-    paddingVertical: 14,
+    minWidth: '47%',
+    paddingVertical: 12,
     paddingHorizontal: 16,
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  successButton: {
-    backgroundColor: '#10B981',
-  },
-  errorButton: {
-    backgroundColor: '#EF4444',
-  },
-  infoButton: {
-    backgroundColor: '#3B82F6',
-  },
-  warningButton: {
-    backgroundColor: '#F59E0B',
-  },
-  promiseButton: {
-    backgroundColor: '#8B5CF6',
-  },
-  customButton: {
-    backgroundColor: '#6B7280',
+  fullWidth: {
+    minWidth: '100%',
   },
   buttonText: {
     color: 'white',
@@ -664,23 +557,39 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
+  // Button Colors
+  defaultButton: { backgroundColor: '#6B7280' },
+  minimalButton: { backgroundColor: '#9CA3AF' },
+  outlinedButton: { backgroundColor: '#4B5563' },
+  filledButton: { backgroundColor: '#374151' },
+  glassButton: { backgroundColor: '#60A5FA' },
+  cardButton: { backgroundColor: '#3B82F6' },
+  floatingButton: { backgroundColor: '#1D4ED8' },
+  bannerButton: { backgroundColor: '#1E40AF' },
+  compactButton: { backgroundColor: '#7C3AED' },
+  notificationButton: { backgroundColor: '#5B21B6' },
+  alertButton: { backgroundColor: '#EF4444' },
+  successButton: { backgroundColor: '#10B981' },
+  errorButton: { backgroundColor: '#F87171' },
+  warningButton: { backgroundColor: '#F59E0B' },
+  infoButton: { backgroundColor: '#06B6D4' },
+  customButton: { backgroundColor: '#4CAF50' },
+  gradientButton: { backgroundColor: '#667eea' },
+  ultraMinimalButton: { backgroundColor: '#78716c' },
+  builderButton: { backgroundColor: '#FF6B6B' },
+  smartButton: { backgroundColor: '#8B5CF6' },
+  apiButton: { backgroundColor: '#EC4899' },
+  footer: {
+    height: 40,
+  },
 });
 
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <ToastProvider
-          theme={Themes.professional}
-          config={{
-            defaultVariant: 'auto', // Let the system decide
-            layout: ToastLayoutPresets.iconRight(),
-            icons: createIconConfig.withCustomIcons({
-              success: CustomHeartIcon,
-            }),
-          }}
-        >
-          <ToastDemo />
+        <ToastProvider theme={Themes.vibrant}>
+          <VariantsDemo />
         </ToastProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
