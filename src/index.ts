@@ -11,7 +11,6 @@ export { PREDEFINED_VARIANTS, variants } from './api/variants';
 // Type exports
 export type {
   AnimationConfig,
-  HapticConfig,
   QueueConfig,
   ToastLayoutConfig,
   ToastProviderConfig,
@@ -59,9 +58,9 @@ export type {
 
 // Utility exports
 export {
+  createVerticalOffset,
   ToastLayoutPresets,
   VerticalOffsetPresets,
-  createVerticalOffset,
 } from './types/ConfigTypes';
 export { IconPresets } from './types/IconTypes';
 export {

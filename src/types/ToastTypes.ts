@@ -11,8 +11,7 @@ export type ToastPosition = 'top' | 'center' | 'bottom' | 'smart';
 export type ToastVariant = string;
 
 // Import types from other files
-import type { AnimationConfig, HapticConfig } from './ConfigTypes';
-import type { GestureConfig } from './GestureTypes';
+import type { AnimationConfig } from './ConfigTypes';
 import type { CustomIconComponent, ToastTypeIconConfig } from './IconTypes';
 
 export interface ToastConfig {
@@ -24,13 +23,18 @@ export interface ToastConfig {
   priority?: ToastPriority;
   duration?: ToastDuration;
   position?: ToastPosition;
-  gestureConfig?: GestureConfig;
-  hapticConfig?: HapticConfig;
   animationConfig?: AnimationConfig;
   // Icon override for this specific toast
   icon?: CustomIconComponent | ToastTypeIconConfig | false;
   // Variant-specific style overrides
   variantStyle?: Partial<import('./VariantTypes').VariantStyle>;
+  // Progress bar configuration
+  progressBar?: {
+    enabled?: boolean;
+    position?: 'top' | 'bottom';
+    color?: string;
+    height?: number;
+  };
 }
 
 // Enhanced Promise API Types

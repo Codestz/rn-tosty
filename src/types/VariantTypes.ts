@@ -52,14 +52,7 @@ export interface VariantBehavior {
 
   // Interaction behavior
   dismissOnTap?: boolean;
-  dismissOnSwipe?: boolean;
   allowManualDismiss?: boolean;
-
-  // Haptic feedback
-  hapticFeedback?: 'light' | 'medium' | 'heavy' | 'none';
-
-  // Sound feedback
-  soundFeedback?: boolean;
 
   // Priority handling
   priority?: 'low' | 'medium' | 'high' | 'urgent';
@@ -186,9 +179,6 @@ export interface VariantBuilder {
   // Behavior methods
   setAutoDismiss(autoDismiss: boolean): VariantBuilder;
   setDefaultDuration(duration: number): VariantBuilder;
-  setHapticFeedback(
-    feedback: 'light' | 'medium' | 'heavy' | 'none'
-  ): VariantBuilder;
 
   // Type overrides
   setTypeOverride(

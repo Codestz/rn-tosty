@@ -211,10 +211,7 @@ export const getVariantBehavior = (resolvedVariant: ResolvedVariant) => {
     autoDismiss: resolvedVariant.behavior.autoDismiss,
     defaultDuration: resolvedVariant.behavior.defaultDuration,
     dismissOnTap: resolvedVariant.behavior.dismissOnTap,
-    dismissOnSwipe: resolvedVariant.behavior.dismissOnSwipe,
-    hapticFeedback: resolvedVariant.behavior.hapticFeedback,
     priority: resolvedVariant.behavior.priority,
-    soundFeedback: resolvedVariant.behavior.soundFeedback,
     stackable: resolvedVariant.behavior.stackable,
     replaceExisting: resolvedVariant.behavior.replaceExisting,
   };
@@ -272,7 +269,7 @@ export const resolveToastVariantSmart = (
     const optimalVariant = selectOptimalVariant(
       toast.config.type || 'info',
       !!toast.config.title,
-      toast.config.message.length,
+      toast.config.message?.length || 0,
       theme
     );
 

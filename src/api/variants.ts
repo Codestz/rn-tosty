@@ -30,7 +30,6 @@ export const variants = {
    *   },
    *   behavior: {
    *     defaultDuration: 5000,
-   *     hapticFeedback: 'medium',
    *   }
    * });
    * ```

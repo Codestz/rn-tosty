@@ -24,3 +24,30 @@ export interface ToastItemStyles {
   message: object;
   typeIndicator: object;
 }
+
+/**
+ * Animation configuration for toast animations
+ */
+export interface ToastAnimationConfig {
+  animationDuration: number;
+  animationEasing: string;
+  autoDismiss: boolean;
+  defaultDuration: number;
+}
+
+/**
+ * Icon configuration for toast icon rendering
+ */
+export interface ToastIconConfig {
+  shouldShowIcon: boolean;
+  iconPosition: 'left' | 'right' | 'top' | 'none';
+  iconSize: 'small' | 'medium' | 'large' | number;
+  iconColor: string;
+}
+
+/**
+ * Interaction configuration for toast behavior
+ */
+export interface ToastInteractionConfig {
+  dismissOnTap: boolean;
+}

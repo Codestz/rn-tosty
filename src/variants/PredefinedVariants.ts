@@ -10,10 +10,7 @@ const defaultBehavior: VariantBehavior = {
   autoDismiss: true,
   defaultDuration: 4000,
   dismissOnTap: true,
-  dismissOnSwipe: true,
   allowManualDismiss: true,
-  hapticFeedback: 'light',
-  soundFeedback: false,
   priority: 'medium',
   stackable: true,
   replaceExisting: false,
@@ -93,7 +90,6 @@ export const predefinedVariants: Record<
     },
     behavior: {
       ...defaultBehavior,
-      hapticFeedback: 'none',
     },
     iconConfig: {
       showIcon: false,
@@ -166,7 +162,6 @@ export const predefinedVariants: Record<
     },
     behavior: {
       ...defaultBehavior,
-      hapticFeedback: 'medium',
     },
     iconConfig: {
       showIcon: true,
@@ -358,7 +353,6 @@ export const predefinedVariants: Record<
     },
     behavior: {
       ...defaultBehavior,
-      hapticFeedback: 'light',
       defaultDuration: 5000,
     },
     iconConfig: {
@@ -391,7 +385,6 @@ export const predefinedVariants: Record<
     },
     behavior: {
       ...defaultBehavior,
-      hapticFeedback: 'heavy',
       defaultDuration: 8000, // Longer for alerts
       priority: 'urgent',
     },
@@ -414,7 +407,6 @@ export const predefinedVariants: Record<
     },
     behavior: {
       ...defaultBehavior,
-      hapticFeedback: 'medium',
     },
     iconConfig: {
       showIcon: true,
@@ -434,7 +426,6 @@ export const predefinedVariants: Record<
     },
     behavior: {
       ...defaultBehavior,
-      hapticFeedback: 'heavy',
       defaultDuration: 6000, // Longer for errors
     },
     iconConfig: {
@@ -455,7 +446,6 @@ export const predefinedVariants: Record<
     },
     behavior: {
       ...defaultBehavior,
-      hapticFeedback: 'medium',
       defaultDuration: 5000,
     },
     iconConfig: {

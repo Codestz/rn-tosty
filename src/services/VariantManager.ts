@@ -97,13 +97,6 @@ class VariantBuilder implements IVariantBuilder {
     return this;
   }
 
-  setHapticFeedback(
-    feedback: 'light' | 'medium' | 'heavy' | 'none'
-  ): IVariantBuilder {
-    this.variant.behavior!.hapticFeedback = feedback;
-    return this;
-  }
-
   setTypeOverride(
     type: ToastType,
     style: Partial<VariantStyle>
@@ -429,10 +422,7 @@ export class VariantManager implements IVariantManager {
       autoDismiss: behavior.autoDismiss ?? true,
       defaultDuration: behavior.defaultDuration ?? 4000,
       dismissOnTap: behavior.dismissOnTap ?? true,
-      dismissOnSwipe: behavior.dismissOnSwipe ?? true,
       allowManualDismiss: behavior.allowManualDismiss ?? true,
-      hapticFeedback: behavior.hapticFeedback || 'light',
-      soundFeedback: behavior.soundFeedback ?? false,
       priority: behavior.priority || 'medium',
       stackable: behavior.stackable ?? true,
       replaceExisting: behavior.replaceExisting ?? false,

@@ -1,5 +1,7 @@
 // Configuration Type Definitions
+import type { ProgressBarConfig } from '../components/ToastProgressBar/ToastProgressBar.types';
 import type { IconConfig } from './IconTypes';
+import type { SafeAreaConfig } from './SafeAreaTypes';
 import type { ToastVariant } from './ToastTypes';
 
 export interface VerticalOffsetConfig {
@@ -13,20 +15,6 @@ export interface ToastLayoutConfig {
   textAlignment?: 'left' | 'center' | 'right' | 'auto';
   direction?: 'ltr' | 'rtl' | 'auto'; // For RTL language support
   spacing?: 'compact' | 'normal' | 'spacious';
-}
-
-export interface HapticConfig {
-  enabled?: boolean;
-  type?:
-    | 'selection'
-    | 'impactLight'
-    | 'impactMedium'
-    | 'impactHeavy'
-    | 'notificationSuccess'
-    | 'notificationWarning'
-    | 'notificationError';
-  pattern?: 'single' | 'double' | 'triple' | 'custom';
-  customPattern?: number[];
 }
 
 export interface AnimationConfig {
@@ -56,11 +44,12 @@ export interface ToastProviderConfig {
   defaultVariant?: ToastVariant; // Default variant for all toasts
   layout?: ToastLayoutConfig; // Layout configuration
   icons?: IconConfig; // Icon configuration
-  globalHapticConfig?: HapticConfig;
   globalAnimationConfig?: AnimationConfig;
-  safeAreaConfig?: import('./SafeAreaTypes').SafeAreaConfig;
+  safeAreaConfig?: SafeAreaConfig;
   // Vertical offset configuration
   verticalOffset?: VerticalOffsetConfig;
+  // Progress bar configuration
+  progressBar?: ProgressBarConfig;
 }
 
 export interface QueueConfig {

@@ -8,7 +8,6 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import {
@@ -47,7 +46,6 @@ function VariantsDemo(): React.JSX.Element {
       },
       behavior: {
         defaultDuration: 6000,
-        hapticFeedback: 'medium',
       },
     });
 
@@ -74,7 +72,6 @@ function VariantsDemo(): React.JSX.Element {
       },
       behavior: {
         defaultDuration: 8000,
-        hapticFeedback: 'heavy',
         priority: 'high',
       },
     });
@@ -96,7 +93,6 @@ function VariantsDemo(): React.JSX.Element {
       },
       behavior: {
         defaultDuration: 2000,
-        hapticFeedback: 'none',
       },
       iconConfig: {
         showIcon: false,
@@ -115,7 +111,6 @@ function VariantsDemo(): React.JSX.Element {
       .setIconPosition('right')
       .setIconSize('medium')
       .setDefaultDuration(5000)
-      .setHapticFeedback('medium')
       .build();
 
     variants.register(builderVariant);
@@ -586,12 +581,10 @@ const styles = StyleSheet.create({
 
 export default function App() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <ToastProvider theme={Themes.vibrant}>
-          <VariantsDemo />
-        </ToastProvider>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <SafeAreaProvider>
+      <ToastProvider theme={Themes.vibrant}>
+        <VariantsDemo />
+      </ToastProvider>
+    </SafeAreaProvider>
   );
 }
