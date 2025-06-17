@@ -13,6 +13,7 @@ export const PositionContainer: React.FC<PositionContainerProps> = ({
   theme,
   config,
   onRemove,
+  onAnimationComplete,
 }) => {
   if (toasts.length === 0) {
     return null;
@@ -46,6 +47,7 @@ export const PositionContainer: React.FC<PositionContainerProps> = ({
           theme={theme}
           config={config}
           onRemove={onRemove}
+          onAnimationComplete={onAnimationComplete}
         />
       ))}
     </View>

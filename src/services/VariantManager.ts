@@ -291,7 +291,9 @@ export class VariantManager implements IVariantManager {
 
     const parentVariant = this.getVariant(variant.extends);
     if (!parentVariant) {
-      console.warn(`Parent variant not found: ${variant.extends}`);
+      // Import logger at the top of the file
+      const { logWarn } = require('../utils/logger');
+      logWarn(`Parent variant not found: ${variant.extends}`);
       return variant;
     }
 

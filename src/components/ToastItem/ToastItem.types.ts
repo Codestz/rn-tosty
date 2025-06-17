@@ -8,6 +8,7 @@ export interface ToastItemProps {
   theme: Theme;
   config?: ToastProviderConfig;
   onRemove: (id: string) => void;
+  onAnimationComplete: (id: string) => void;
 }
 
 export interface ToastColors {

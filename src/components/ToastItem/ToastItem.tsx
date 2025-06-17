@@ -2,7 +2,8 @@
  * Toast Item - Modern component orchestrator with separated concerns
  * Now focused on coordination between hooks and sub-components
  */
-import React from 'react';
+import React, { useMemo } from 'react';
+import type { AccessibilityRole } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useToastAnimation } from '../../hooks/useToastAnimation';
 import { useToastInteraction } from '../../hooks/useToastInteraction';
@@ -19,6 +20,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
   theme,
   config,
   onRemove,
+  onAnimationComplete,
 }) => {
   // Extract styling logic to custom hook
   const {
@@ -49,7 +51,9 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     toastProgressConfig?.enabled !== false &&
     // Only show for auto-dismiss toasts
     variantBehavior.autoDismiss &&
-    toast.config.duration !== 'permanent';
+    toast.config.duration !== 'permanent' &&
+    // Don't show progress bar if toast is dismissing
+    !toast.isDismissing;
 
   // Get final progress bar position
   const progressPosition =
@@ -68,7 +72,8 @@ export const ToastItem: React.FC<ToastItemProps> = ({
       autoDismiss: variantBehavior.autoDismiss,
       defaultDuration: variantBehavior.defaultDuration,
     },
-    onRemove
+    onRemove,
+    onAnimationComplete
   );
 
   // Extract progress tracking logic to custom hook (called after animation to use handleDismiss)
@@ -87,10 +92,57 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     handleDismiss
   );
 
+  // Accessibility configuration
+  const accessibilityProps = useMemo(() => {
+    const toastType = toast.config.type || 'info';
+    const title = toast.config.title;
+    const message = toast.config.message;
+
+    // Create accessible label combining title and message
+    const accessibleText = title ? `${title}. ${message}` : message;
+
+    // Determine accessibility role based on toast type
+    const getAccessibilityRole = (): AccessibilityRole => {
+      switch (toastType) {
+        case 'error':
+          return 'alert';
+        case 'warning':
+          return 'alert';
+        default:
+          return 'text';
+      }
+    };
+
+    // Create accessibility hint
+    const getAccessibilityHint = () => {
+      if (variantBehavior.dismissOnTap) {
+        return variantBehavior.autoDismiss
+          ? 'Tap to dismiss, or will auto-dismiss'
+          : 'Tap to dismiss';
+      }
+      return variantBehavior.autoDismiss ? 'Will auto-dismiss' : undefined;
+    };
+
+    return {
+      accessible: true,
+      accessibilityRole: getAccessibilityRole(),
+      accessibilityLabel: accessibleText,
+      accessibilityHint: getAccessibilityHint(),
+      accessibilityLiveRegion:
+        toastType === 'error' || toastType === 'warning'
+          ? ('assertive' as const)
+          : ('polite' as const),
+      // Announce immediately for important toasts
+      accessibilityElementsHidden: false,
+      importantForAccessibility: 'yes' as const,
+    };
+  }, [toast.config, variantBehavior]);
+
   return (
     <Animated.View
       style={[animatedStyle, containerStyle]}
       onTouchEnd={handleTap}
+      {...accessibilityProps}
     >
       {/* Progress Bar - Top Position */}
       {shouldShowProgressBar && progressPosition === 'top' && (

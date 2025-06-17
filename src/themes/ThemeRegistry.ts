@@ -32,9 +32,9 @@ export class ThemeManager {
   getTheme(themeName: ThemeName, mode?: 'light' | 'dark' | 'auto'): Theme {
     const themePair = themeRegistry[themeName];
     if (!themePair) {
-      console.warn(
-        `Theme "${themeName}" not found. Falling back to default theme.`
-      );
+      // Import logger at the top of the file
+      const { logWarn } = require('../utils/logger');
+      logWarn(`Theme "${themeName}" not found. Falling back to default theme.`);
       return themeRegistry.default.light;
     }
 

@@ -267,7 +267,10 @@ export const ThemeDemo: React.FC<ThemeDemoProps> = ({ theme }) => {
   const showQueueManagementExamples = () => {
     // Show queue stats before
     const statsBefore = getQueueStats();
-    console.log('Queue stats before:', statsBefore);
+    // Log queue stats for debugging (only in development)
+    if (__DEV__) {
+      console.log('Queue stats before:', statsBefore);
+    }
 
     // Rapid fire toasts to demonstrate queue management
     for (let i = 1; i <= 8; i++) {
@@ -284,7 +287,10 @@ export const ThemeDemo: React.FC<ThemeDemoProps> = ({ theme }) => {
     // Show queue stats after
     setTimeout(() => {
       const statsAfter = getQueueStats();
-      console.log('Queue stats after:', statsAfter);
+      // Log queue stats for debugging (only in development)
+      if (__DEV__) {
+        console.log('Queue stats after:', statsAfter);
+      }
 
       // Show a summary toast
       setTimeout(() => {

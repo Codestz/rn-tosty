@@ -42,6 +42,34 @@ export class ToastManager {
     return result.id;
   }
 
+  /**
+   * Start the dismissal process - marks toast as dismissing but keeps it in queue
+   * This allows exit animations to play before the toast is actually removed
+   */
+  startDismiss(id: string): void {
+    // Clear any pending dismiss timer
+    this.clearDismissTimer(id);
+
+    // Mark toast as dismissing
+    this.queueManager.markAsDismissing(id);
+
+    // Notify listeners so UI can start exit animation
+    const state = this.queueManager.getState();
+    this.notifyListeners(state.visible);
+  }
+
+  /**
+   * Complete the dismissal process - actually removes toast from queue
+   * This should be called after exit animation completes
+   */
+  completeDismiss(id: string): void {
+    this.queueManager.dequeue(id);
+  }
+
+  /**
+   * Legacy dismiss method - immediately removes toast (for backwards compatibility)
+   * Use startDismiss() + completeDismiss() for smooth animations
+   */
   dismiss(id?: string): void {
     if (id) {
       // Clear any pending dismiss timer
@@ -94,11 +122,17 @@ export class ToastManager {
     // Clear any existing timer for this toast
     this.clearDismissTimer(id);
 
+    // Don't schedule auto-dismiss for toasts that are already dismissing
+    const toast = this.queueManager.getState().visible.find((t) => t.id === id);
+    if (toast?.isDismissing) {
+      return;
+    }
+
     // Schedule new auto-dismiss if not permanent
     if (config.duration !== 'permanent') {
       const duration = this.calculateDuration(config);
       const timer = setTimeout(() => {
-        this.dismiss(id);
+        this.startDismiss(id); // Use startDismiss for smooth animation
       }, duration);
       this.dismissTimers.set(id, timer);
     }

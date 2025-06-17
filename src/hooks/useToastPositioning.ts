@@ -23,8 +23,9 @@ export const useToastPositioning = (config: ToastProviderConfig) => {
       return safeAreaInsets;
     } catch (error) {
       // SafeAreaProvider not found, using default insets
-      console.warn(
-        'rn-tosty: SafeAreaProvider not found. Please wrap your app with SafeAreaProvider from react-native-safe-area-context for optimal positioning.'
+      const { logWarn } = require('../utils/logger');
+      logWarn(
+        'SafeAreaProvider not found. Please wrap your app with SafeAreaProvider from react-native-safe-area-context for optimal positioning.'
       );
       return { top: 0, bottom: 0, left: 0, right: 0 };
     }
@@ -47,9 +48,9 @@ export const useToastPositioning = (config: ToastProviderConfig) => {
           bottom: bottomCalculation,
         });
       } catch (error) {
-        console.warn(
-          'rn-tosty: Failed to calculate smart positioning, using fallback'
-        );
+        const { logWarn } = require('../utils/logger');
+        logWarn('Failed to calculate smart positioning, using fallback');
+
         // Fallback positioning with user offsets
         const globalOffset = config.verticalOffset?.global || 0;
         const topOffset = config.verticalOffset?.top || 0;

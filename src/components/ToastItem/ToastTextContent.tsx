@@ -21,13 +21,28 @@ export const ToastTextContent: React.FC<ToastTextContentProps> = ({
   getMessageLines,
 }) => {
   return (
-    <View style={textContainerStyle}>
+    <View
+      style={textContainerStyle}
+      // Hide from accessibility since parent container provides the full accessible text
+      accessibilityElementsHidden={true}
+      importantForAccessibility="no-hide-descendants"
+    >
       {toast.config.title && (
-        <Text style={titleStyle} numberOfLines={2}>
+        <Text
+          style={titleStyle}
+          numberOfLines={2}
+          // Individual text elements are hidden since parent provides combined text
+          accessible={false}
+        >
           {toast.config.title}
         </Text>
       )}
-      <Text style={messageStyle} numberOfLines={getMessageLines()}>
+      <Text
+        style={messageStyle}
+        numberOfLines={getMessageLines()}
+        // Individual text elements are hidden since parent provides combined text
+        accessible={false}
+      >
         {toast.config.message}
       </Text>
     </View>

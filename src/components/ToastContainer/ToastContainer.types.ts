@@ -44,4 +44,5 @@ export interface PositionContainerProps {
   theme: Theme;
   config: any; // Will be properly typed based on your config
   onRemove: (id: string) => void;
+  onAnimationComplete: (id: string) => void;
 }

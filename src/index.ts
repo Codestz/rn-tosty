@@ -9,6 +9,7 @@ export { toast } from './api/toast';
 export { PREDEFINED_VARIANTS, variants } from './api/variants';
 
 // Type exports
+export type { AccessibilityConfig } from './types/AccessibilityTypes';
 export type {
   AnimationConfig,
   QueueConfig,
@@ -100,3 +101,18 @@ export type {
   ToastLoadingIconProps,
   TransitionState,
 } from './components/ToastLoadingIcon/ToastLoadingIcon.types';
+
+// Error handling and logging utilities
+export { ToastErrorBoundary } from './components/ErrorBoundary';
+export {
+  logCritical,
+  logDebug,
+  logError,
+  logger,
+  logInfo,
+  logWarn,
+} from './utils/logger';
+export type { LoggerConfig } from './utils/logger';
+
+// Accessibility utilities
+export { DEFAULT_ACCESSIBILITY_CONFIG } from './types/AccessibilityTypes';

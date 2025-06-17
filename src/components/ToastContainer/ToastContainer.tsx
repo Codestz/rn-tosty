@@ -7,6 +7,7 @@ import { useToastContext } from '../../context/ToastProvider';
 import { useToastGrouping } from '../../hooks/useToastGrouping';
 import { useToastPositioning } from '../../hooks/useToastPositioning';
 import { ToastManager } from '../../services/ToastManager';
+import { ToastErrorBoundary } from '../ErrorBoundary';
 import { PositionContainer } from './PositionContainer';
 import type { ToastContainerProps } from './ToastContainer.types';
 
@@ -22,10 +23,18 @@ export const ToastContainer: React.FC<ToastContainerProps> = ({ theme }) => {
   // Extract toast grouping logic to custom hook
   const groupedToasts = useToastGrouping(toasts, config, positioning);
 
-  // Handle toast removal - actually dismiss the toast from the manager
+  // Handle toast removal - start dismissal process (triggers exit animation)
   const handleRemove = useCallback(
     (id: string) => {
-      toastManager.dismiss(id);
+      toastManager.startDismiss(id);
+    },
+    [toastManager]
+  );
+
+  // Handle animation completion - actually remove toast from queue
+  const handleAnimationComplete = useCallback(
+    (id: string) => {
+      toastManager.completeDismiss(id);
     },
     [toastManager]
   );
@@ -39,24 +48,30 @@ export const ToastContainer: React.FC<ToastContainerProps> = ({ theme }) => {
     <>
       {/* Top positioned toasts */}
       {positioning.top && (
-        <PositionContainer
-          toasts={groupedToasts.top}
-          positioning={positioning.top}
-          theme={theme}
-          config={config}
-          onRemove={handleRemove}
-        />
+        <ToastErrorBoundary>
+          <PositionContainer
+            toasts={groupedToasts.top}
+            positioning={positioning.top}
+            theme={theme}
+            config={config}
+            onRemove={handleRemove}
+            onAnimationComplete={handleAnimationComplete}
+          />
+        </ToastErrorBoundary>
       )}
 
       {/* Bottom positioned toasts */}
       {positioning.bottom && (
-        <PositionContainer
-          toasts={groupedToasts.bottom}
-          positioning={positioning.bottom}
-          theme={theme}
-          config={config}
-          onRemove={handleRemove}
-        />
+        <ToastErrorBoundary>
+          <PositionContainer
+            toasts={groupedToasts.bottom}
+            positioning={positioning.bottom}
+            theme={theme}
+            config={config}
+            onRemove={handleRemove}
+            onAnimationComplete={handleAnimationComplete}
+          />
+        </ToastErrorBoundary>
       )}
     </>
   );

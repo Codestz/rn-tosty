@@ -149,6 +149,21 @@ export class QueueManager {
     return false;
   }
 
+  /**
+   * Mark a toast as dismissing (for exit animations)
+   */
+  markAsDismissing(id: string): boolean {
+    const toast = this.visible.get(id);
+    if (toast) {
+      toast.isDismissing = true;
+      toast.updatedAt = new Date();
+      this.visible.set(id, toast);
+      this.notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
   // Private methods
 
   private getDefaultConfig(config: QueueConfig): Required<QueueConfig> {

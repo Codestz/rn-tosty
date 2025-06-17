@@ -41,7 +41,8 @@ export const resolveToastVariant = (
 
     return resolvedVariant;
   } catch (error) {
-    console.warn(
+    const { logWarn } = require('./logger');
+    logWarn(
       `Failed to resolve variant '${variantName}', falling back to default:`,
       error
     );

@@ -1,5 +1,6 @@
 // Configuration Type Definitions
 import type { ProgressBarConfig } from '../components/ToastProgressBar/ToastProgressBar.types';
+import type { AccessibilityConfig } from './AccessibilityTypes';
 import type { IconConfig } from './IconTypes';
 import type { SafeAreaConfig } from './SafeAreaTypes';
 import type { ToastVariant } from './ToastTypes';
@@ -52,6 +53,8 @@ export interface ToastProviderConfig {
   progressBar?: ProgressBarConfig;
   // Queue management configuration
   queue?: QueueConfig;
+  // Accessibility configuration
+  accessibility?: AccessibilityConfig;
 }
 
 export interface QueueConfig {
@@ -204,18 +207,6 @@ export const QueuePresets = {
     placement: 'bottom',
     autoDismissQueued: true,
     showDelay: 200,
-  }),
-
-  // High priority only - only show urgent/high priority toasts
-  highPriorityOnly: (): QueueConfig => ({
-    maxVisible: 2,
-    maxSize: 5,
-    priorityOrdering: true,
-    mergeStrategy: 'duplicate',
-    overflowStrategy: 'dismiss-lowest-priority',
-    placement: 'priority-based',
-    autoDismissQueued: false, // Keep high priority toasts longer
-    showDelay: 100,
   }),
 
   // No queue - immediate display only, ignore if full

@@ -202,9 +202,8 @@ export const validateCustomIcon = (
   iconName: string
 ): component is CustomIconComponent => {
   if (typeof component !== 'function') {
-    console.warn(
-      `rn-tosty: Custom icon "${iconName}" must be a React component`
-    );
+    const { logWarn } = require('./logger');
+    logWarn(`Custom icon "${iconName}" must be a React component`);
     return false;
   }
 

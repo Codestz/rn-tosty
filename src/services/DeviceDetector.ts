@@ -64,10 +64,9 @@ export class DeviceDetector {
 
       return this.deviceInfo;
     } catch (error) {
-      console.warn(
-        'rn-tosty: Failed to get device info, using fallback values',
-        error
-      );
+      // Import logger at the top of the file
+      const { logWarn } = require('../utils/logger');
+      logWarn('Failed to get device info, using fallback values', error);
 
       // Fallback device info
       this.deviceInfo = {

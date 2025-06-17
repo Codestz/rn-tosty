@@ -183,6 +183,8 @@ export interface Toast {
   updatedAt: Date;
   isVisible: boolean;
   progress: number;
+  /** Whether the toast is in the process of being dismissed (for exit animations) */
+  isDismissing?: boolean;
   isPromiseToast?: boolean; // Track if this is a promise toast
   promiseState?: 'loading' | 'success' | 'error'; // Current promise state
   parentPromiseId?: string; // For linking success/error toasts to loading toast
