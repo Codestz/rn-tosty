@@ -63,8 +63,14 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
 
   useEffect(() => {
     const unsubscribe = manager.subscribe(setToasts);
+
+    // Configure queue management if provided
+    if (config.queue) {
+      manager.configureQueue(config.queue);
+    }
+
     return unsubscribe;
-  }, [manager]);
+  }, [manager, config.queue]);
 
   const contextValue = useMemo(
     () => ({

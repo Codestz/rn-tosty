@@ -1,87 +1,92 @@
 // Toast Manager - Core business logic with simple API
+import type { QueueConfig } from '../types/ConfigTypes';
 import type { Toast, ToastConfig } from '../types/ToastTypes';
+import { QueueManager } from './QueueManager';
 
 export class ToastManager {
   private static instance: ToastManager;
-  private toasts: Map<string, Toast> = new Map();
+  private queueManager: QueueManager;
   private listeners: Set<(toasts: Toast[]) => void> = new Set();
   private dismissTimers: Map<string, NodeJS.Timeout> = new Map();
 
-  private constructor() {}
+  private constructor() {
+    this.queueManager = new QueueManager();
+
+    // Subscribe to queue state changes
+    this.queueManager.subscribe((state) => {
+      this.notifyListeners(state.visible);
+
+      // Handle auto-dismiss for visible toasts
+      state.visible.forEach((toast) => {
+        this.scheduleAutoDismiss(toast.id, toast.config);
+      });
+    });
+  }
 
   static getInstance(): ToastManager {
     if (!ToastManager.instance) {
       ToastManager.instance = new ToastManager();
     }
-    if (!ToastManager.instance) {
-      throw new Error('Failed to create ToastManager instance');
-    }
     return ToastManager.instance;
   }
 
+  /**
+   * Configure queue management
+   */
+  configureQueue(config: QueueConfig): void {
+    this.queueManager.updateConfig(config);
+  }
+
   show(config: ToastConfig): string {
-    const id = config.id || this.generateId();
-    const toast: Toast = {
-      id,
-      config: {
-        ...this.getDefaultConfig(),
-        ...config,
-        id,
-      },
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      isVisible: true,
-      progress: 0,
-    };
-
-    this.toasts.set(id, toast);
-    this.notifyListeners();
-
-    // Auto-dismiss logic
-    this.scheduleAutoDismiss(id, toast.config);
-
-    return id;
+    const result = this.queueManager.enqueue(config);
+    return result.id;
   }
 
   dismiss(id?: string): void {
     if (id) {
       // Clear any pending dismiss timer
       this.clearDismissTimer(id);
-      this.toasts.delete(id);
+      this.queueManager.dequeue(id);
     } else {
-      // Clear all timers
+      // Clear all timers and toasts
       this.dismissTimers.forEach((timer) => clearTimeout(timer));
       this.dismissTimers.clear();
-      this.toasts.clear();
+      this.queueManager.clear();
     }
-    this.notifyListeners();
   }
 
   update(id: string, config: Partial<ToastConfig>): void {
-    const toast = this.toasts.get(id);
-    if (toast) {
-      toast.config = { ...toast.config, ...config };
-      toast.updatedAt = new Date();
-      this.toasts.set(id, toast);
-      this.notifyListeners();
-
+    const updated = this.queueManager.updateVisible(id, config);
+    if (updated) {
       // If duration was updated, reschedule auto-dismiss
       if (config.duration !== undefined) {
-        this.scheduleAutoDismiss(id, toast.config);
+        this.scheduleAutoDismiss(id, { ...this.getToastConfig(id), ...config });
       }
     }
   }
 
   getToasts(): Toast[] {
-    return Array.from(this.toasts.values()).sort(
-      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-    );
+    return this.queueManager
+      .getState()
+      .visible.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   subscribe(listener: (toasts: Toast[]) => void): () => void {
     this.listeners.add(listener);
     return () => {
       this.listeners.delete(listener);
+    };
+  }
+
+  /**
+   * Get queue statistics
+   */
+  getQueueStats() {
+    const state = this.queueManager.getState();
+    return {
+      visible: state.visible.length,
+      queued: state.queued.length,
+      total: state.totalCount,
     };
   }
 
@@ -107,13 +112,14 @@ export class ToastManager {
     }
   }
 
-  private notifyListeners(): void {
-    const toasts = this.getToasts();
+  private notifyListeners(toasts: Toast[]): void {
     this.listeners.forEach((listener) => listener(toasts));
   }
 
-  private generateId(): string {
-    return `toast_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  private getToastConfig(id: string): ToastConfig {
+    const state = this.queueManager.getState();
+    const toast = state.visible.find((t) => t.id === id);
+    return toast?.config || this.getDefaultConfig();
   }
 
   private getDefaultConfig(): ToastConfig {
@@ -132,14 +138,13 @@ export class ToastManager {
     }
 
     if (config.duration === 'auto') {
-      // Auto-calculate based on message length
-      const messageLength = (config.title || '').length + config.message.length;
-      const baseTime = 3000; // 3 seconds base
-      const readingTime = messageLength * 50; // ~50ms per character
-      return Math.min(Math.max(baseTime + readingTime, 2000), 8000); // 2-8 seconds
+      // Smart duration based on message length
+      const messageLength = config.message.length + (config.title?.length || 0);
+      const baseTime = 3000;
+      const extraTime = Math.min(messageLength * 50, 4000);
+      return baseTime + extraTime;
     }
 
-    // Default duration
-    return 4000;
+    return 4000; // Default fallback
   }
 }

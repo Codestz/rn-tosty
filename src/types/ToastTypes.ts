@@ -172,6 +172,8 @@ export interface ToastAPI {
     messages: PromiseMessages<T>,
     config?: PromiseConfig
   ) => Promise<T>;
+  /** Get queue statistics (visible, queued, total counts) */
+  getQueueStats: () => { visible: number; queued: number; total: number };
 }
 
 export interface Toast {

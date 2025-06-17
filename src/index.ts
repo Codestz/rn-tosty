@@ -59,6 +59,7 @@ export type {
 // Utility exports
 export {
   createVerticalOffset,
+  QueuePresets,
   ToastLayoutPresets,
   VerticalOffsetPresets,
 } from './types/ConfigTypes';

@@ -100,6 +100,13 @@ export const toast: ToastAPI = {
   ): Promise<T> => {
     return promiseManager.handlePromise(promise, messages, config);
   },
+
+  /**
+   * Get queue statistics
+   */
+  getQueueStats: () => {
+    return manager.getQueueStats();
+  },
 };
 
 // Export all toast APIs

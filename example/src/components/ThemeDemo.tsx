@@ -51,7 +51,7 @@ const CustomHeartIcon: CustomIconComponent = ({
 };
 
 export const ThemeDemo: React.FC<ThemeDemoProps> = ({ theme }) => {
-  const { success, error, warning, info, promise } = useToast();
+  const { success, error, warning, info, promise, getQueueStats } = useToast();
   const isDarkMode = useColorScheme() === 'dark';
   const styles = createStyles(isDarkMode);
 
@@ -264,6 +264,61 @@ export const ThemeDemo: React.FC<ThemeDemoProps> = ({ theme }) => {
     );
   };
 
+  const showQueueManagementExamples = () => {
+    // Show queue stats before
+    const statsBefore = getQueueStats();
+    console.log('Queue stats before:', statsBefore);
+
+    // Rapid fire toasts to demonstrate queue management
+    for (let i = 1; i <= 8; i++) {
+      setTimeout(() => {
+        const priority =
+          i <= 2 ? 'urgent' : i <= 4 ? 'high' : i <= 6 ? 'medium' : 'low';
+        success(`Toast ${i} - Priority: ${priority}`, {
+          priority: priority as any,
+          duration: 4000,
+        });
+      }, i * 100);
+    }
+
+    // Show queue stats after
+    setTimeout(() => {
+      const statsAfter = getQueueStats();
+      console.log('Queue stats after:', statsAfter);
+
+      // Show a summary toast
+      setTimeout(() => {
+        info(
+          `Queue Demo: ${statsAfter.visible} visible, ${statsAfter.queued} queued, ${statsAfter.total} total`,
+          {
+            duration: 6000,
+            priority: 'urgent',
+          }
+        );
+      }, 1000);
+    }, 1000);
+  };
+
+  const showPriorityExamples = () => {
+    // Show different priority toasts
+    setTimeout(() => error('Low priority error', { priority: 'low' }), 100);
+    setTimeout(
+      () => warning('Medium priority warning', { priority: 'medium' }),
+      200
+    );
+    setTimeout(() => info('High priority info', { priority: 'high' }), 300);
+    setTimeout(() => success('Urgent success!', { priority: 'urgent' }), 400);
+  };
+
+  const showMergeStrategyExamples = () => {
+    // Show duplicate messages to demonstrate merge strategy
+    setTimeout(() => success('Duplicate message test'), 100);
+    setTimeout(() => success('Duplicate message test'), 200);
+    setTimeout(() => success('Duplicate message test'), 300);
+    setTimeout(() => info('Similar message test'), 400);
+    setTimeout(() => info('Similar message test'), 500);
+  };
+
   const showPositioningExamples = () => {
     setTimeout(
       () =>
@@ -369,6 +424,36 @@ export const ThemeDemo: React.FC<ThemeDemoProps> = ({ theme }) => {
 
         <TouchableOpacity
           style={styles.demoButton}
+          onPress={showQueueManagementExamples}
+        >
+          <Text style={styles.demoButtonText}>🎨 Show Queue Management</Text>
+          <Text style={styles.demoButtonSubtext}>
+            Queue stats and management
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.demoButton}
+          onPress={showPriorityExamples}
+        >
+          <Text style={styles.demoButtonText}>🎨 Show Priority</Text>
+          <Text style={styles.demoButtonSubtext}>
+            Different priority toasts
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.demoButton}
+          onPress={showMergeStrategyExamples}
+        >
+          <Text style={styles.demoButtonText}>🎨 Show Merge Strategy</Text>
+          <Text style={styles.demoButtonSubtext}>
+            Duplicate and similar message handling
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.demoButton}
           onPress={showCustomVariantExamples}
         >
           <Text style={styles.demoButtonText}>🎨 Show Custom Variant</Text>
@@ -400,6 +485,45 @@ success('Hello World!', {
   progressBar: { enabled: true },
   position: 'top'
 });`}
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Queue Management Usage</Text>
+        <View style={styles.codeBlock}>
+          <Text style={styles.codeText}>
+            {`import { ToastProvider, QueuePresets } from 'rn-tosty';
+
+// Configure queue management
+<ToastProvider 
+  theme={Themes.${theme}}
+  config={{
+    queue: QueuePresets.default(), // or conservative(), aggressive(), etc.
+    // Or custom configuration:
+    // queue: {
+    //   maxVisible: 3,
+    //   maxSize: 10,
+    //   priorityOrdering: true,
+    //   mergeStrategy: 'similar',
+    //   overflowStrategy: 'dismiss-oldest'
+    // }
+  }}
+>
+  <YourApp />
+</ToastProvider>
+
+// Use priority in your toasts
+const { success, getQueueStats } = useToast();
+
+success('High priority message', { 
+  priority: 'high',
+  duration: 5000 
+});
+
+// Check queue statistics
+const stats = getQueueStats();
+console.log(\`\${stats.visible} visible, \${stats.queued} queued\`);`}
           </Text>
         </View>
       </View>
