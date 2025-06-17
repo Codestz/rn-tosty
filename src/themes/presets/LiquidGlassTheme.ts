@@ -1,10 +1,7 @@
 // LiquidGlass Theme - Inspired by iOS 26 fluid design language
 import type { Theme, ThemePair } from '../../types/ThemeTypes';
 import {
-  baseAnimations,
-  baseBlur,
   baseBorderRadius,
-  baseOpacity,
   baseSpacing,
   baseTypography,
   colorUtils,
@@ -77,47 +74,12 @@ const liquidGlassLight: Theme = {
     xl: 50, // Maximum rounded - extra large elements
   },
 
-  animations: {
-    // Use base animations structure - no custom properties
-    duration: {
-      ...baseAnimations.duration,
-      normal: 350, // Slightly longer for fluid feel
-      fast: 250,
-    },
-    easing: {
-      ...baseAnimations.easing,
-      // iOS prefers smooth easing over bounce
-    },
-  },
-
   shadows: {
     none: 'none',
     sm: '0 1px 3px 0 rgba(0, 0, 0, 0.04)', // Ultra-subtle
     md: '0 4px 12px 0 rgba(0, 0, 0, 0.06)', // Glass-like depth
     lg: '0 8px 20px 0 rgba(0, 0, 0, 0.08)', // Floating glass effect
     xl: '0 16px 32px 0 rgba(0, 0, 0, 0.1)', // Deep glass shadow
-  },
-
-  effects: {
-    blur: {
-      ...baseBlur,
-      sm: 12, // iOS blur intensity
-      md: 20,
-      lg: 30,
-    },
-    opacity: {
-      ...baseOpacity,
-      // Use only defined opacity values
-      overlay: 0.15, // Custom overlay for glass effect
-    },
-    gradients: {
-      primary: 'linear-gradient(135deg, #007AFF 0%, #5856D6 100%)', // Blue to purple
-      secondary: 'linear-gradient(135deg, #8E8E93 0%, #636366 100%)',
-      success: 'linear-gradient(135deg, #30D158 0%, #32D74B 100%)',
-      error: 'linear-gradient(135deg, #FF3B30 0%, #FF453A 100%)',
-      warning: 'linear-gradient(135deg, #FF9500 0%, #FF9F0A 100%)',
-      info: 'linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%)',
-    },
   },
 };
 
@@ -188,44 +150,12 @@ const liquidGlassDark: Theme = {
     xl: 50, // Maximum rounded - extra large elements
   },
 
-  animations: {
-    duration: {
-      ...baseAnimations.duration,
-      normal: 350,
-      fast: 250,
-    },
-    easing: {
-      ...baseAnimations.easing,
-    },
-  },
-
   shadows: {
     none: 'none',
     sm: '0 1px 3px 0 rgba(0, 0, 0, 0.2)', // More visible in dark
     md: '0 4px 12px 0 rgba(0, 0, 0, 0.3)',
     lg: '0 8px 20px 0 rgba(0, 0, 0, 0.4)',
     xl: '0 16px 32px 0 rgba(0, 0, 0, 0.5)',
-  },
-
-  effects: {
-    blur: {
-      ...baseBlur,
-      sm: 12,
-      md: 20,
-      lg: 30,
-    },
-    opacity: {
-      ...baseOpacity,
-      overlay: 0.25, // Custom overlay for dark glass effect
-    },
-    gradients: {
-      primary: 'linear-gradient(135deg, #0A84FF 0%, #5E5CE6 100%)',
-      secondary: 'linear-gradient(135deg, #8E8E93 0%, #636366 100%)',
-      success: 'linear-gradient(135deg, #30D158 0%, #32D74B 100%)',
-      error: 'linear-gradient(135deg, #FF453A 0%, #FF6961 100%)',
-      warning: 'linear-gradient(135deg, #FF9F0A 0%, #FFB340 100%)',
-      info: 'linear-gradient(135deg, #0A84FF 0%, #5AC8FA 100%)',
-    },
   },
 };
 

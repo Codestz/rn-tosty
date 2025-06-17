@@ -1,10 +1,7 @@
 // Default Theme - Clean, contemporary design perfect for most apps
 import type { Theme, ThemePair } from '../../types/ThemeTypes';
 import {
-  baseAnimations,
-  baseBlur,
   baseBorderRadius,
-  baseOpacity,
   baseSpacing,
   baseTypography,
   colorUtils,
@@ -58,7 +55,6 @@ const defaultLight: Theme = {
 
   spacing: baseSpacing,
   borderRadius: baseBorderRadius,
-  animations: baseAnimations,
 
   shadows: {
     none: 'none',
@@ -66,19 +62,6 @@ const defaultLight: Theme = {
     md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
     lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
     xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-  },
-
-  effects: {
-    blur: baseBlur,
-    opacity: baseOpacity,
-    gradients: {
-      primary: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
-      secondary: 'linear-gradient(135deg, #6B7280 0%, #374151 100%)',
-      success: 'linear-gradient(135deg, #10B981 0%, #047857 100%)',
-      error: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
-      warning: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-      info: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
-    },
   },
 };
 
@@ -130,7 +113,6 @@ const defaultDark: Theme = {
 
   spacing: baseSpacing,
   borderRadius: baseBorderRadius,
-  animations: baseAnimations,
 
   shadows: {
     none: 'none',
@@ -138,19 +120,6 @@ const defaultDark: Theme = {
     md: '0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3)',
     lg: '0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3)',
     xl: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4)',
-  },
-
-  effects: {
-    blur: baseBlur,
-    opacity: baseOpacity,
-    gradients: {
-      primary: 'linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%)',
-      secondary: 'linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)',
-      success: 'linear-gradient(135deg, #34D399 0%, #10B981 100%)',
-      error: 'linear-gradient(135deg, #F87171 0%, #EF4444 100%)',
-      warning: 'linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%)',
-      info: 'linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%)',
-    },
   },
 };
 

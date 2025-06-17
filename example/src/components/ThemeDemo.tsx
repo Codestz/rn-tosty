@@ -7,7 +7,8 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { useToast, variants, type CustomIconComponent } from 'rn-tosty';
+import type { CustomIconComponent } from 'rn-tosty';
+import { useTosty, variants } from 'rn-tosty';
 
 type ThemeName = 'default' | 'liquidGlass' | 'minimalist';
 
@@ -51,7 +52,7 @@ const CustomHeartIcon: CustomIconComponent = ({
 };
 
 export const ThemeDemo: React.FC<ThemeDemoProps> = ({ theme }) => {
-  const { success, error, warning, info, promise, getQueueStats } = useToast();
+  const { success, error, warning, info, promise, getQueueStats } = useTosty();
   const isDarkMode = useColorScheme() === 'dark';
   const styles = createStyles(isDarkMode);
 
@@ -481,9 +482,9 @@ export const ThemeDemo: React.FC<ThemeDemoProps> = ({ theme }) => {
         <Text style={styles.sectionTitle}>Usage Example</Text>
         <View style={styles.codeBlock}>
           <Text style={styles.codeText}>
-            {`import { useToast } from 'rn-tosty';
+            {`import { useTosty } from 'rn-tosty';
 
-const { success } = useToast();
+const { success } = useTosty();
 
 success('Hello World!', {
   variant: 'default',

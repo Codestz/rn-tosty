@@ -1,4 +1,3 @@
-// Modern Toast API - Enhanced with variant system and smart defaults
 import { PromiseToastManager } from '../services/PromiseToastManager';
 import { ToastManager } from '../services/ToastManager';
 import type {

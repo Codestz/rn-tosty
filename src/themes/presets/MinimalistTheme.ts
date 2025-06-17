@@ -1,9 +1,7 @@
 // Minimalist Theme - Ultra-clean design with lots of whitespace
 import type { Theme, ThemePair } from '../../types/ThemeTypes';
 import {
-  baseAnimations,
   baseBorderRadius,
-  baseOpacity,
   baseSpacing,
   baseTypography,
   colorUtils,
@@ -75,48 +73,12 @@ const minimalistLight: Theme = {
     xl: 0, // Completely boxed - no rounding
   },
 
-  animations: {
-    ...baseAnimations,
-    duration: {
-      fast: 100, // Faster, more subtle animations
-      normal: 200,
-      slow: 300,
-    },
-    easing: {
-      ...baseAnimations.easing,
-      spring: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)', // Gentle easing
-    },
-  },
-
   shadows: {
     none: 'none',
     sm: '0 1px 2px 0 rgba(0, 0, 0, 0.03)', // Very subtle shadows
     md: '0 2px 4px 0 rgba(0, 0, 0, 0.05)',
     lg: '0 4px 8px 0 rgba(0, 0, 0, 0.08)',
     xl: '0 8px 16px 0 rgba(0, 0, 0, 0.1)',
-  },
-
-  effects: {
-    blur: {
-      none: 0,
-      sm: 5, // Minimal blur
-      md: 10,
-      lg: 15,
-    },
-    opacity: {
-      ...baseOpacity,
-      hover: 0.04, // Very subtle interactions
-      active: 0.08,
-      overlay: 0.1,
-    },
-    gradients: {
-      primary: 'linear-gradient(135deg, #000000 0%, #374151 100%)',
-      secondary: 'linear-gradient(135deg, #6B7280 0%, #9CA3AF 100%)',
-      success: 'linear-gradient(135deg, #059669 0%, #10B981 100%)',
-      error: 'linear-gradient(135deg, #DC2626 0%, #EF4444 100%)',
-      warning: 'linear-gradient(135deg, #D97706 0%, #F59E0B 100%)',
-      info: 'linear-gradient(135deg, #2563EB 0%, #3B82F6 100%)',
-    },
   },
 };
 
@@ -186,48 +148,12 @@ const minimalistDark: Theme = {
     xl: 0, // Completely boxed - no rounding
   },
 
-  animations: {
-    ...baseAnimations,
-    duration: {
-      fast: 100,
-      normal: 200,
-      slow: 300,
-    },
-    easing: {
-      ...baseAnimations.easing,
-      spring: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-    },
-  },
-
   shadows: {
     none: 'none',
     sm: '0 1px 2px 0 rgba(0, 0, 0, 0.2)',
     md: '0 2px 4px 0 rgba(0, 0, 0, 0.3)',
     lg: '0 4px 8px 0 rgba(0, 0, 0, 0.4)',
     xl: '0 8px 16px 0 rgba(0, 0, 0, 0.5)',
-  },
-
-  effects: {
-    blur: {
-      none: 0,
-      sm: 5,
-      md: 10,
-      lg: 15,
-    },
-    opacity: {
-      ...baseOpacity,
-      hover: 0.04,
-      active: 0.08,
-      overlay: 0.15,
-    },
-    gradients: {
-      primary: 'linear-gradient(135deg, #FFFFFF 0%, #F3F4F6 100%)',
-      secondary: 'linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)',
-      success: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-      error: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
-      warning: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-      info: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
-    },
   },
 };
 

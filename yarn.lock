@@ -11457,7 +11457,14 @@ __metadata:
     react-native-safe-area-context: ^5.4.1
     react-native-screens: ^4.11.1
     react-native-svg: ^15.12.0
+    rn-tosty: "link:../src"
   languageName: unknown
+  linkType: soft
+
+"rn-tosty@link:../src::locator=rn-tosty-example%40workspace%3Aexample":
+  version: 0.0.0-use.local
+  resolution: "rn-tosty@link:../src::locator=rn-tosty-example%40workspace%3Aexample"
+  languageName: node
   linkType: soft
 
 "rn-tosty@workspace:.":
@@ -11495,7 +11502,10 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: "*"
+    react-native-device-info: ">=10.0.0"
+    react-native-reanimated: ">=3.0.0"
     react-native-safe-area-context: ">=4.0.0"
+    react-native-svg: ">=13.0.0"
   languageName: unknown
   linkType: soft
 

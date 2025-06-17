@@ -61,33 +61,6 @@ export interface IconPreset {
   config: IconConfig;
 }
 
-// Built-in icon presets
-export const IconPresets = {
-  // Default rn-tosty icons
-  default: (): IconConfig => ({
-    defaultSize: 'medium',
-    defaultAnimated: true,
-  }),
-
-  // Larger icons for better visibility
-  large: (): IconConfig => ({
-    defaultSize: 'large',
-    defaultAnimated: true,
-  }),
-
-  // Smaller, subtle icons
-  minimal: (): IconConfig => ({
-    defaultSize: 'small',
-    defaultAnimated: false,
-  }),
-
-  // No animations for performance
-  static: (): IconConfig => ({
-    defaultSize: 'medium',
-    defaultAnimated: false,
-  }),
-} as const;
-
 // Helper type for icon size resolution
 export type IconSize = 'small' | 'medium' | 'large' | number;
 

@@ -1,15 +1,26 @@
-// Main exports for rn-tosty
-export { ToastProvider } from './context/ToastProvider';
-export { useToast } from './hooks/useToast';
-
-// Enhanced Toast API exports
+// Core API exports
 export { toast } from './api/toast';
+export { ToastProvider } from './context/ToastProvider';
+export { useToast as useTosty } from './hooks/useToast';
 
-// Variant system exports
-export { PREDEFINED_VARIANTS, variants } from './api/variants';
+// Presets exports - All user configuration presets
+export * from './presets';
 
-// Type exports
+// Variant system exports - Only the user-facing variant utility
+export { variants } from './api/variants';
+
+// Theme exports
+export { Themes } from './themes/AllThemes';
+
+// Icon utilities - User-facing icon configuration helpers
+export { createIconConfig, createVectorIcon } from './utils/iconResolver';
+
+// Essential Type exports for user configuration
 export type { AccessibilityConfig } from './types/AccessibilityTypes';
+export type { SafeAreaConfig } from './types/SafeAreaTypes';
+export type { Theme } from './types/ThemeTypes';
+
+// Configuration types - What users need to configure the provider
 export type {
   AnimationConfig,
   QueueConfig,
@@ -17,14 +28,13 @@ export type {
   ToastProviderConfig,
   VerticalOffsetConfig,
 } from './types/ConfigTypes';
-export type { SafeAreaConfig } from './types/SafeAreaTypes';
-export type { Theme } from './types/ThemeTypes';
+
+// Toast core types - Essential for creating and configuring toasts
 export type {
   LoadingIconConfig,
   PromiseConfig,
   PromiseErrorMessage,
   PromiseMessage,
-  // Enhanced Promise API types
   PromiseMessages,
   PromiseToastConfig,
   Toast,
@@ -33,86 +43,29 @@ export type {
   ToastVariant,
 } from './types/ToastTypes';
 
-// Variant system type exports
+// Variant system types - User-facing variant configuration
 export type {
   CustomVariantConfig,
   PredefinedVariantName,
-  ResolvedVariant,
   ToastVariantDefinition,
-  VariantBehavior,
   VariantBuilder,
   VariantName,
   VariantStyle,
 } from './types/VariantTypes';
 
-// Icon configuration exports
+// Icon configuration types - What users need for custom icons
 export type {
   BaseIconProps,
   CustomIconComponent,
   IconConfig,
   IconPreset,
   IconSize,
-  IconThemeConfig,
-  ResolvedIconConfig,
   ToastTypeIconConfig,
 } from './types/IconTypes';
 
-// Utility exports
-export {
-  createVerticalOffset,
-  QueuePresets,
-  ToastLayoutPresets,
-  VerticalOffsetPresets,
-} from './types/ConfigTypes';
-export { IconPresets } from './types/IconTypes';
-export {
-  createIconConfig,
-  createVectorIcon,
-  resolveIconConfig,
-  resolveIconSize,
-  validateCustomIcon,
-} from './utils/iconResolver';
-
-// Theme exports
-export { Themes } from './themes/AllThemes';
-export { getAllThemes, getTheme, getThemeNames } from './themes/ThemeRegistry';
-
-// Configuration presets and utilities
-export {
-  calculateLayout,
-  getIconMargin,
-  getTextAlignmentStyle,
-} from './utils/layoutUtils';
-
-// Component exports (for advanced usage)
-export { ToastIcon } from './components/ToastIcon/ToastIcon';
-export { ToastLoadingIcon } from './components/ToastLoadingIcon/ToastLoadingIcon';
-
-// Loading icon types
-export {
-  LOADING_ANIMATION_CONFIGS,
-  LOADING_ICON_SIZES,
-} from './components/ToastLoadingIcon/ToastLoadingIcon.types';
+// Loading animation types - User-facing animation configuration
 export type {
-  LoadingAnimationConfig,
-  LoadingAnimationProps,
   LoadingAnimationType,
   LoadingIconSize,
   ToastLoadingIconProps,
-  TransitionState,
 } from './components/ToastLoadingIcon/ToastLoadingIcon.types';
-
-// Error handling and logging utilities
-export { ToastErrorBoundary } from './components/ErrorBoundary';
-export {
-  logCritical,
-  logDebug,
-  logError,
-  logger,
-  logInfo,
-  logWarn,
-} from './utils/logger';
-export type { LoggerConfig } from './utils/logger';
-
-// Accessibility utilities
-export { DEFAULT_ACCESSIBILITY_CONFIG } from './types/AccessibilityTypes';

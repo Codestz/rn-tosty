@@ -134,8 +134,6 @@ export interface Theme {
   spacing: ThemeSpacing;
   borderRadius: ThemeBorderRadius;
   shadows: ThemeShadows;
-  animations: ThemeAnimations;
-  effects: ThemeEffects;
 }
 
 // Theme pair for light/dark modes
@@ -159,19 +157,3 @@ export interface ToastThemeConfig {
   theme?: ThemeName | Theme;
   mode?: 'light' | 'dark' | 'auto'; // auto follows system
 }
-
-// Legacy support - keeping existing simple theme names
-export type LegacyThemeName =
-  | 'modern-light'
-  | 'modern-dark'
-  | 'glassmorphism-light'
-  | 'glassmorphism-dark'
-  | 'minimalist-light'
-  | 'minimalist-dark'
-  | 'vibrant-light'
-  | 'vibrant-dark'
-  | 'professional-light'
-  | 'professional-dark';
-
-// Legacy ThemeObject type (for backward compatibility)
-export type ThemeObject = Theme;
