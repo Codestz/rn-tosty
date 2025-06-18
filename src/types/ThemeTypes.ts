@@ -1,4 +1,4 @@
-// Theme System Types - Comprehensive design system for beautiful toast themes
+// Theme System Types - Simplified design system focused on toast needs
 export interface ThemeColors {
   // Base colors
   primary: string;
@@ -13,119 +13,118 @@ export interface ThemeColors {
   // Background system
   background: string;
   surface: string;
-  surfaceVariant: string;
 
   // Text system
   onPrimary: string;
   onSecondary: string;
   onSurface: string;
-  onSurfaceVariant: string;
 
   // Border and dividers
   border: string;
-  borderVariant: string;
 
   // Overlay and shadows
   overlay: string;
   shadow: string;
 }
 
+// Simplified typography - only title and description for toasts
 export interface ThemeTypography {
-  // Font families
-  titleFontFamily: string;
-  bodyFontFamily: string;
-
-  // Font sizes
-  titleFontSize: number;
-  bodyFontSize: number;
-  captionFontSize: number;
-
-  // Font weights
-  fontWeight: {
-    light: '100' | '200' | '300' | '400';
-    regular: '400' | '500';
-    medium: '500' | '600';
-    semiBold: '600' | '700';
-    bold: '700' | '800' | '900';
+  title: {
+    size: number;
+    weight: string;
+    lineHeight: number;
   };
-
-  // Line heights
-  titleLineHeight: number;
-  bodyLineHeight: number;
-  captionLineHeight: number;
+  description: {
+    size: number;
+    weight: string;
+    lineHeight: number;
+  };
 }
 
+// Toast-specific spacing based on layoutUtils usage
 export interface ThemeSpacing {
-  xs: number; // 4
-  sm: number; // 8
-  md: number; // 16
-  lg: number; // 24
-  xl: number; // 32
-  xxl: number; // 48
+  icon: number;
+  container: number;
+  text: number;
 }
 
-export interface ThemeBorderRadius {
-  none: number; // 0
-  sm: number; // 4
-  md: number; // 8
-  lg: number; // 12
-  xl: number; // 16
-  full: number; // 999
-}
+// Simple border radius - number or predefined string
+export type ThemeBorderRadius = number | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 
+// Shadow configuration for React Native compatibility
 export interface ThemeShadows {
-  none: string;
-  sm: string;
-  md: string;
-  lg: string;
-  xl: string;
+  shadowColor: string;
+  shadowOpacity: number;
+  shadowRadius: number;
+  shadowOffset: { width: number; height: number };
+  elevation: number; // Android shadow
 }
 
-export interface ThemeAnimations {
-  duration: {
-    fast: number; // 150ms
-    normal: number; // 300ms
-    slow: number; // 500ms
+// Progress bar theme configuration
+export interface ThemeProgressBar {
+  /**
+   * Track (background) configuration
+   */
+  track: {
+    backgroundColor: string;
+    borderRadius: number;
+    height: number;
+    opacity?: number;
   };
 
-  easing: {
-    linear: string;
-    easeIn: string;
-    easeOut: string;
-    easeInOut: string;
-    spring: string;
+  /**
+   * Progress bar (foreground) configuration
+   */
+  bar: {
+    borderRadius: number;
+    height: number;
+    // Gradient configuration (optional)
+    gradient?: {
+      colors: string[];
+      locations?: number[];
+      start?: { x: number; y: number };
+      end?: { x: number; y: number };
+    };
+  };
+
+  /**
+   * Animation configuration
+   */
+  animation: {
+    duration: number;
+    easing: 'linear' | 'ease-out' | 'ease-in-out';
+  };
+
+  /**
+   * Positioning configuration
+   */
+  positioning: {
+    defaultPosition: 'top' | 'bottom';
+    marginTop: number;
+    marginBottom: number;
   };
 }
 
-export interface ThemeEffects {
-  // Glassmorphism
-  blur: {
-    none: number;
-    sm: number;
-    md: number;
-    lg: number;
+// Helper function to resolve border radius strings to numbers
+export const resolveBorderRadius = (
+  borderRadius: ThemeBorderRadius
+): number => {
+  if (typeof borderRadius === 'number') {
+    return borderRadius;
+  }
+
+  const radiusMap = {
+    sm: 4,
+    md: 8,
+    lg: 12,
+    xl: 16,
+    full: 9999,
   };
 
-  // Opacity levels
-  opacity: {
-    disabled: number;
-    hover: number;
-    active: number;
-    overlay: number;
-  };
+  return radiusMap[borderRadius] || 8;
+};
 
-  // Gradient support
-  gradients: {
-    primary: string;
-    secondary: string;
-    success: string;
-    error: string;
-    warning: string;
-    info: string;
-  };
-}
-
-// Complete theme interface
+// Complete theme interface - simplified
 export interface Theme {
   name: string;
   mode: 'light' | 'dark';
@@ -134,6 +133,7 @@ export interface Theme {
   spacing: ThemeSpacing;
   borderRadius: ThemeBorderRadius;
   shadows: ThemeShadows;
+  progressBar: ThemeProgressBar;
 }
 
 // Theme pair for light/dark modes
@@ -143,13 +143,14 @@ export interface ThemePair {
 }
 
 // Available theme names
-export type ThemeName = 'default' | 'liquidGlass' | 'minimalist';
+export type ThemeName = 'default' | 'warmSunset' | 'oceanBreeze' | 'forestGlow';
 
 // Theme registry
 export interface ThemeRegistry {
   default: ThemePair;
-  liquidGlass: ThemePair;
-  minimalist: ThemePair;
+  warmSunset: ThemePair;
+  oceanBreeze: ThemePair;
+  forestGlow: ThemePair;
 }
 
 // Theme configuration for toast

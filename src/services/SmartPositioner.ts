@@ -1,10 +1,10 @@
 // Smart Positioning Service - Intelligent toast positioning based on device characteristics
-import type { ToastProviderConfig } from '../types/ConfigTypes';
 import type {
   DeviceInfo,
   SafeAreaCalculation,
   SafeAreaInsets,
-} from '../types/SafeAreaTypes';
+  ToastProviderConfig,
+} from '../types/ConfigTypes';
 import type { ToastPosition } from '../types/ToastTypes';
 import { DeviceDetector } from './DeviceDetector';
 
@@ -155,23 +155,37 @@ export class SmartPositioner {
     const baseMargin = 16;
     let margin = Math.max(safeAreaInsets.top, deviceInfo.statusBarHeight);
 
-    // Add extra margin for Dynamic Island
-    if (deviceInfo.hasDynamicIsland) {
-      margin += 8;
-    }
+    // Add device-specific adjustments (can be disabled via verticalOffset.adaptToDevice)
+    const shouldAdaptToDevice = config?.verticalOffset?.adaptToDevice !== false;
 
-    // Add extra margin for notched devices
-    if (deviceInfo.hasNotch && !deviceInfo.hasDynamicIsland) {
-      margin += 4;
+    if (shouldAdaptToDevice) {
+      // Add extra margin for Dynamic Island
+      if (deviceInfo.hasDynamicIsland) {
+        margin += 8;
+      }
+
+      // Add extra margin for notched devices
+      if (deviceInfo.hasNotch && !deviceInfo.hasDynamicIsland) {
+        margin += 4;
+      }
     }
 
     // Apply user-defined vertical offsets
     if (config?.verticalOffset) {
+      // Apply global and position-specific offsets
       if (config.verticalOffset.global) {
         margin += config.verticalOffset.global;
       }
       if (config.verticalOffset.top) {
         margin += config.verticalOffset.top;
+      }
+
+      // Apply min/max margin constraints
+      if (config.verticalOffset.minMargin !== undefined) {
+        margin = Math.max(margin, config.verticalOffset.minMargin);
+      }
+      if (config.verticalOffset.maxMargin !== undefined) {
+        margin = Math.min(margin, config.verticalOffset.maxMargin);
       }
     }
 
@@ -192,18 +206,32 @@ export class SmartPositioner {
       deviceInfo.homeIndicatorHeight
     );
 
-    // Add extra margin for gesture-based navigation
-    if (!deviceInfo.hasHomeButton) {
-      margin += 8;
+    // Add device-specific adjustments (can be disabled via verticalOffset.adaptToDevice)
+    const shouldAdaptToDevice = config?.verticalOffset?.adaptToDevice !== false;
+
+    if (shouldAdaptToDevice) {
+      // Add extra margin for gesture-based navigation
+      if (!deviceInfo.hasHomeButton) {
+        margin += 8;
+      }
     }
 
     // Apply user-defined vertical offsets
     if (config?.verticalOffset) {
+      // Apply global and position-specific offsets
       if (config.verticalOffset.global) {
         margin += config.verticalOffset.global;
       }
       if (config.verticalOffset.bottom) {
         margin += config.verticalOffset.bottom;
+      }
+
+      // Apply min/max margin constraints
+      if (config.verticalOffset.minMargin !== undefined) {
+        margin = Math.max(margin, config.verticalOffset.minMargin);
+      }
+      if (config.verticalOffset.maxMargin !== undefined) {
+        margin = Math.min(margin, config.verticalOffset.maxMargin);
       }
     }
 

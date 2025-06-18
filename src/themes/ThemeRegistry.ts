@@ -14,6 +14,7 @@ export const themeRegistry: ThemeRegistry = Themes;
 export class ThemeManager {
   private static instance: ThemeManager;
   private currentTheme: Theme;
+  private currentThemeName: ThemeName = 'default';
   private systemColorScheme: 'light' | 'dark' = 'light';
 
   private constructor() {
@@ -51,14 +52,23 @@ export class ThemeManager {
     return themePair[targetMode];
   }
 
-  // Set current theme
+  // Set current theme and update variant system
   setTheme(themeName: ThemeName, mode?: 'light' | 'dark' | 'auto'): void {
     this.currentTheme = this.getTheme(themeName, mode);
+    this.currentThemeName = themeName;
+
+    // Update predefined variants to use the new theme
+    this.updateVariantsForTheme(themeName);
   }
 
   // Get current theme
   getCurrentTheme(): Theme {
     return this.currentTheme;
+  }
+
+  // Get current theme name
+  getCurrentThemeName(): ThemeName {
+    return this.currentThemeName;
   }
 
   // Update system color scheme (for auto mode)
@@ -79,6 +89,21 @@ export class ThemeManager {
   // Check if theme exists
   hasTheme(themeName: ThemeName): boolean {
     return themeName in themeRegistry;
+  }
+
+  /**
+   * Update predefined variants to use the current theme
+   * This ensures success/error/warning/info variants adapt to theme changes
+   * @param themeName - Name of the theme to update variants for
+   */
+  private updateVariantsForTheme(themeName: ThemeName): void {
+    const themePair = this.getThemePair(themeName);
+    if (themePair) {
+      // Lazy import to avoid circular dependencies
+      const { VariantManager } = require('../services/VariantManager');
+      const variantManager = VariantManager.getInstance();
+      variantManager.updatePredefinedVariantsTheme(themePair);
+    }
   }
 }
 

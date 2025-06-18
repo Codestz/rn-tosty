@@ -1,11 +1,11 @@
 // Modern Variant Resolver - Clean integration between variants and toast components
 import { VariantManager } from '../services/VariantManager';
+import type { ToastProviderConfig } from '../types/ConfigTypes';
 import type { Theme } from '../types/ThemeTypes';
 import type { Toast, ToastType } from '../types/ToastTypes';
 import type {
   ResolvedVariant,
   VariantResolutionContext,
-  VariantStyle,
 } from '../types/VariantTypes';
 
 /**
@@ -22,22 +22,14 @@ export const resolveToastVariant = (
 
   // Create resolution context
   const context: VariantResolutionContext = {
-    theme,
     toastType: toast.config.type || 'info',
     isDarkMode: theme.mode === 'dark',
+    currentTheme: theme,
   };
 
   try {
     // Resolve the variant
     const resolvedVariant = variantManager.resolveVariant(variantName, context);
-
-    // Apply any toast-specific style overrides
-    if (toast.config.styleOverrides) {
-      resolvedVariant.style = {
-        ...resolvedVariant.style,
-        ...toast.config.styleOverrides,
-      };
-    }
 
     return resolvedVariant;
   } catch (error) {
@@ -52,132 +44,71 @@ export const resolveToastVariant = (
 };
 
 /**
- * Converts variant style to React Native StyleSheet-compatible object
+ * Converts theme to React Native StyleSheet-compatible object
  */
 export const variantStyleToRNStyle = (
-  variantStyle: VariantStyle,
-  _theme: Theme
+  theme: Theme,
+  _themeContext?: Theme
 ): Record<string, any> => {
   const rnStyle: Record<string, any> = {};
 
   // Background
-  if (
-    variantStyle.backgroundColor &&
-    variantStyle.backgroundColor !== 'transparent'
-  ) {
-    rnStyle.backgroundColor = variantStyle.backgroundColor;
-
-    // Apply background opacity if specified
-    if (
-      variantStyle.backgroundOpacity !== undefined &&
-      variantStyle.backgroundOpacity < 1
-    ) {
-      // Convert hex to rgba if needed
-      const color = variantStyle.backgroundColor;
-      if (color.startsWith('#')) {
-        const r = parseInt(color.slice(1, 3), 16);
-        const g = parseInt(color.slice(3, 5), 16);
-        const b = parseInt(color.slice(5, 7), 16);
-        rnStyle.backgroundColor = `rgba(${r}, ${g}, ${b}, ${variantStyle.backgroundOpacity})`;
-      }
-    }
-  }
-
-  // Gradient support (for future enhancement)
-  if (variantStyle.backgroundGradient) {
-    // This could be enhanced with react-native-linear-gradient
-    rnStyle.backgroundGradient = variantStyle.backgroundGradient;
-  }
+  rnStyle.backgroundColor = theme.colors.surface;
 
   // Border
-  if (variantStyle.borderWidth && variantStyle.borderWidth > 0) {
-    rnStyle.borderWidth = variantStyle.borderWidth;
-    if (variantStyle.borderColor) {
-      rnStyle.borderColor = variantStyle.borderColor;
-    }
-    if (variantStyle.borderStyle) {
-      rnStyle.borderStyle = variantStyle.borderStyle;
-    }
-  }
+  rnStyle.borderColor = theme.colors.border;
+  rnStyle.borderWidth = 1;
 
   // Border radius
-  if (variantStyle.borderRadius !== undefined) {
-    rnStyle.borderRadius = variantStyle.borderRadius;
+  if (typeof theme.borderRadius === 'number') {
+    rnStyle.borderRadius = theme.borderRadius;
+  } else {
+    // Resolve string border radius to number
+    const radiusMap = {
+      sm: 4,
+      md: 8,
+      lg: 12,
+      xl: 16,
+      full: 9999,
+    };
+    rnStyle.borderRadius = radiusMap[theme.borderRadius] || 8;
   }
 
-  // Padding
-  if (variantStyle.padding) {
-    if (typeof variantStyle.padding === 'number') {
-      rnStyle.padding = variantStyle.padding;
-    } else {
-      if (variantStyle.padding.horizontal !== undefined) {
-        rnStyle.paddingHorizontal = variantStyle.padding.horizontal;
-      }
-      if (variantStyle.padding.vertical !== undefined) {
-        rnStyle.paddingVertical = variantStyle.padding.vertical;
-      }
-    }
-  }
+  // Padding based on theme spacing
+  rnStyle.paddingHorizontal = theme.spacing.container;
+  rnStyle.paddingVertical = theme.spacing.container * 0.75;
 
-  // Margin
-  if (variantStyle.margin) {
-    if (typeof variantStyle.margin === 'number') {
-      rnStyle.margin = variantStyle.margin;
-    } else {
-      if (variantStyle.margin.horizontal !== undefined) {
-        rnStyle.marginHorizontal = variantStyle.margin.horizontal;
-      }
-      if (variantStyle.margin.vertical !== undefined) {
-        rnStyle.marginVertical = variantStyle.margin.vertical;
-      }
-    }
-  }
-
-  // Dimensions
-  if (variantStyle.minHeight) {
-    rnStyle.minHeight = variantStyle.minHeight;
-  }
-  if (variantStyle.maxWidth) {
-    rnStyle.maxWidth = variantStyle.maxWidth;
-  }
-
-  // Shadow (iOS)
-  if (
-    variantStyle.shadowColor &&
-    variantStyle.shadowOpacity &&
-    variantStyle.shadowOpacity > 0
-  ) {
-    rnStyle.shadowColor = variantStyle.shadowColor;
-    rnStyle.shadowOpacity = variantStyle.shadowOpacity;
-    rnStyle.shadowRadius = variantStyle.shadowRadius || 4;
-    rnStyle.shadowOffset = variantStyle.shadowOffset || { width: 0, height: 2 };
-  }
-
-  // Elevation (Android)
-  if (variantStyle.elevation) {
-    rnStyle.elevation = variantStyle.elevation;
+  // Shadow - directly use theme shadow configuration
+  if (theme.shadows) {
+    rnStyle.shadowColor = theme.shadows.shadowColor;
+    rnStyle.shadowOpacity = theme.shadows.shadowOpacity;
+    rnStyle.shadowRadius = theme.shadows.shadowRadius;
+    rnStyle.shadowOffset = theme.shadows.shadowOffset;
+    rnStyle.elevation = theme.shadows.elevation;
   }
 
   return rnStyle;
 };
 
 /**
- * Gets text styles from variant
+ * Gets text styles from theme
  */
 export const getVariantTextStyles = (
-  variantStyle: VariantStyle,
+  theme: Theme,
   isTitle: boolean = false
 ): Record<string, any> => {
   const textStyle: Record<string, any> = {};
 
-  if (isTitle && variantStyle.titleColor) {
-    textStyle.color = variantStyle.titleColor;
-  } else if (!isTitle && variantStyle.textColor) {
-    textStyle.color = variantStyle.textColor;
-  }
-
-  if (variantStyle.textAlign) {
-    textStyle.textAlign = variantStyle.textAlign;
+  if (isTitle) {
+    textStyle.color = theme.colors.onSurface;
+    textStyle.fontSize = theme.typography.title.size;
+    textStyle.fontWeight = theme.typography.title.weight;
+    textStyle.lineHeight = theme.typography.title.lineHeight;
+  } else {
+    textStyle.color = theme.colors.onSurface;
+    textStyle.fontSize = theme.typography.description.size;
+    textStyle.fontWeight = theme.typography.description.weight;
+    textStyle.lineHeight = theme.typography.description.lineHeight;
   }
 
   return textStyle;
@@ -194,13 +125,15 @@ export const getVariantIconConfig = (
   iconColor?: string;
   iconPosition: 'left' | 'right' | 'top' | 'none';
 } => {
+  // Extract icon configuration from the variant's style (which contains computed values)
+  const iconSize = resolvedVariant.style?.iconSize || 'medium';
+  const iconPosition = resolvedVariant.style?.iconPosition || 'left';
+
   return {
-    shouldShowIcon:
-      resolvedVariant.iconConfig.showIcon &&
-      resolvedVariant.style.iconPosition !== 'none',
-    iconSize: resolvedVariant.style.iconSize,
-    iconColor: resolvedVariant.style.iconColor,
-    iconPosition: resolvedVariant.style.iconPosition,
+    shouldShowIcon: resolvedVariant.iconConfig?.showIcon ?? true,
+    iconSize,
+    iconColor: resolvedVariant.theme.colors.onSurface,
+    iconPosition,
   };
 };
 
@@ -209,17 +142,17 @@ export const getVariantIconConfig = (
  */
 export const getVariantBehavior = (resolvedVariant: ResolvedVariant) => {
   return {
-    autoDismiss: resolvedVariant.behavior.autoDismiss,
-    defaultDuration: resolvedVariant.behavior.defaultDuration,
-    dismissOnTap: resolvedVariant.behavior.dismissOnTap,
-    priority: resolvedVariant.behavior.priority,
-    stackable: resolvedVariant.behavior.stackable,
-    replaceExisting: resolvedVariant.behavior.replaceExisting,
+    autoDismiss: resolvedVariant.behavior?.autoDismiss ?? true,
+    defaultDuration: resolvedVariant.behavior?.defaultDuration ?? 4000,
+    dismissOnTap: resolvedVariant.behavior?.dismissOnTap ?? true,
+    priority: resolvedVariant.behavior?.priority ?? 'medium',
+    stackable: resolvedVariant.behavior?.stackable ?? true,
+    replaceExisting: resolvedVariant.behavior?.replaceExisting ?? false,
   };
 };
 
 /**
- * Smart variant selection based on context
+ * Selects optimal variant based on toast type and context
  */
 export const selectOptimalVariant = (
   toastType: ToastType,
@@ -227,44 +160,62 @@ export const selectOptimalVariant = (
   _messageLength: number,
   _theme: Theme
 ): string => {
-  // Smart variant selection logic - only use available variants
-
-  // For type-specific filled variants
-  if (['success', 'error', 'warning', 'info'].includes(toastType)) {
-    return `${toastType}-filled`;
+  // Smart variant selection based on toast type
+  switch (toastType) {
+    case 'success':
+      return 'success';
+    case 'error':
+      return 'error';
+    case 'warning':
+      return 'warning';
+    case 'info':
+      return 'info';
+    default:
+      return 'default';
   }
-
-  // Default fallback
-  return 'default';
 };
 
 /**
- * Enhanced variant resolution with smart defaults
+ * Smart variant resolution with fallbacks and optimizations
  */
 export const resolveToastVariantSmart = (
   toast: Toast,
-  theme: Theme
+  theme: Theme,
+  config?: ToastProviderConfig
 ): ResolvedVariant => {
-  // If no variant specified, use smart selection
-  if (!toast.config.variant) {
-    const optimalVariant = selectOptimalVariant(
-      toast.config.type || 'info',
-      !!toast.config.title,
-      toast.config.message?.length || 0,
-      theme
-    );
+  // If variant is explicitly specified, use it
+  if (toast.config.variant) {
+    return resolveToastVariant(toast, theme);
+  }
 
-    // Create a new toast config with the optimal variant
-    const enhancedToast = {
+  // Use global default variant if configured
+  if (config?.defaultVariant) {
+    const toastWithDefaultVariant: Toast = {
       ...toast,
       config: {
         ...toast.config,
-        variant: optimalVariant,
+        variant: config.defaultVariant,
       },
     };
-
-    return resolveToastVariant(enhancedToast, theme);
+    return resolveToastVariant(toastWithDefaultVariant, theme);
   }
 
-  return resolveToastVariant(toast, theme);
+  // Otherwise, use smart selection
+  const optimalVariant = selectOptimalVariant(
+    toast.config.type || 'info',
+    !!toast.config.title,
+    toast.config.message?.length || 0,
+    theme
+  );
+
+  // Create a toast config with the optimal variant
+  const optimizedToast: Toast = {
+    ...toast,
+    config: {
+      ...toast.config,
+      variant: optimalVariant,
+    },
+  };
+
+  return resolveToastVariant(optimizedToast, theme);
 };

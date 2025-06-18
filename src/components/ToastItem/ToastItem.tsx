@@ -98,8 +98,45 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     const title = toast.config.title;
     const message = toast.config.message;
 
+    // Get accessibility config with defaults
+    const accessibilityConfig = {
+      enabled: true,
+      customLabels: {
+        success: 'Success',
+        error: 'Error',
+        warning: 'Warning',
+        info: 'Information',
+      },
+      announceMode: 'auto' as const,
+      customHints: {
+        dismissible: 'Tap to dismiss',
+        autoDismiss: 'Will auto-dismiss',
+        permanent: 'Tap to dismiss',
+      },
+      includeTypeInLabel: true,
+      includeDurationInHint: false,
+      ...(config?.accessibility || {}),
+    };
+
+    // If accessibility is disabled, return minimal props
+    if (!accessibilityConfig.enabled) {
+      return {
+        accessible: false,
+        importantForAccessibility: 'no' as const,
+      };
+    }
+
     // Create accessible label combining title and message
-    const accessibleText = title ? `${title}. ${message}` : message;
+    let accessibleText = title ? `${title}. ${message}` : message;
+
+    // Add type label if enabled
+    if (accessibilityConfig.includeTypeInLabel) {
+      const typeLabel =
+        accessibilityConfig.customLabels[
+          toastType as keyof typeof accessibilityConfig.customLabels
+        ] || toastType;
+      accessibleText = `${typeLabel}. ${accessibleText}`;
+    }
 
     // Determine accessibility role based on toast type
     const getAccessibilityRole = (): AccessibilityRole => {
@@ -115,12 +152,41 @@ export const ToastItem: React.FC<ToastItemProps> = ({
 
     // Create accessibility hint
     const getAccessibilityHint = () => {
+      let hint = '';
+
       if (variantBehavior.dismissOnTap) {
-        return variantBehavior.autoDismiss
-          ? 'Tap to dismiss, or will auto-dismiss'
-          : 'Tap to dismiss';
+        hint = accessibilityConfig.customHints.dismissible || 'Tap to dismiss';
+        if (variantBehavior.autoDismiss) {
+          hint += `, or ${accessibilityConfig.customHints.autoDismiss || 'will auto-dismiss'}`;
+        }
+      } else if (variantBehavior.autoDismiss) {
+        hint =
+          accessibilityConfig.customHints.autoDismiss || 'Will auto-dismiss';
+      } else {
+        hint = accessibilityConfig.customHints.permanent || 'Tap to dismiss';
       }
-      return variantBehavior.autoDismiss ? 'Will auto-dismiss' : undefined;
+
+      // Add duration information if enabled
+      if (accessibilityConfig.includeDurationInHint && actualDuration) {
+        const seconds = Math.round(actualDuration / 1000);
+        hint += `. Duration: ${seconds} seconds`;
+      }
+
+      return hint;
+    };
+
+    // Determine live region based on config and toast type
+    const getLiveRegion = () => {
+      if (accessibilityConfig.announceMode === 'assertive') {
+        return 'assertive' as const;
+      } else if (accessibilityConfig.announceMode === 'polite') {
+        return 'polite' as const;
+      } else {
+        // Auto mode: assertive for errors/warnings, polite for others
+        return toastType === 'error' || toastType === 'warning'
+          ? ('assertive' as const)
+          : ('polite' as const);
+      }
     };
 
     return {
@@ -128,15 +194,12 @@ export const ToastItem: React.FC<ToastItemProps> = ({
       accessibilityRole: getAccessibilityRole(),
       accessibilityLabel: accessibleText,
       accessibilityHint: getAccessibilityHint(),
-      accessibilityLiveRegion:
-        toastType === 'error' || toastType === 'warning'
-          ? ('assertive' as const)
-          : ('polite' as const),
+      accessibilityLiveRegion: getLiveRegion(),
       // Announce immediately for important toasts
       accessibilityElementsHidden: false,
       importantForAccessibility: 'yes' as const,
     };
-  }, [toast.config, variantBehavior]);
+  }, [toast.config, variantBehavior, config?.accessibility, actualDuration]);
 
   return (
     <Animated.View

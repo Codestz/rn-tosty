@@ -54,13 +54,11 @@ export interface BaseToastConfig {
 
 /**
  * Complete toast configuration used internally by the toast system
- * Includes all properties including type and style overrides
+ * Includes all properties including type
  */
 export interface ToastConfig extends BaseToastConfig {
   /** Toast type - set automatically by method calls (success, error, etc.) */
   type?: ToastType;
-  /** Fine-grained style overrides for customizing specific visual aspects */
-  styleOverrides?: Partial<import('./VariantTypes').VariantStyle>;
 }
 
 /**
@@ -74,15 +72,11 @@ export interface ToastConfig extends BaseToastConfig {
  * success('Operation completed!', {
  *   variant: 'default',
  *   duration: 3000,
- *   layout: { iconPosition: 'right', textAlignment: 'center' },
- *   styleOverrides: { backgroundColor: '#custom-color' }
+ *   layout: { iconPosition: 'right', textAlignment: 'center' }
  * });
  * ```
  */
-export interface MethodToastConfig extends Omit<BaseToastConfig, 'message'> {
-  /** Fine-grained style overrides for customizing specific visual aspects */
-  styleOverrides?: Partial<import('./VariantTypes').VariantStyle>;
-}
+export interface MethodToastConfig extends Omit<BaseToastConfig, 'message'> {}
 
 // Enhanced Promise API Types
 export interface PromiseToastConfig {
@@ -139,17 +133,10 @@ export interface PromiseConfig {
  *
  * @example
  * ```typescript
- * const { success, error, info, warning } = useToast();
- *
- * // Simple usage - just message
- * success('Operation completed!');
- *
- * // With configuration - clean and type-safe
- * error('Something went wrong', {
- *   variant: 'error-filled',
- *   duration: 5000,
- *   title: 'Error',
- *   styleOverrides: { borderColor: '#ff0000' }
+ * toast('Operation failed', {
+ *   type: 'error',
+ *   variant: 'error',
+ *   duration: 5000
  * });
  * ```
  */

@@ -18,7 +18,7 @@ export { createIconConfig, createVectorIcon } from './utils/iconResolver';
 
 // Essential Type exports for user configuration
 export type { AccessibilityConfig } from './types/AccessibilityTypes';
-export type { SafeAreaConfig } from './types/SafeAreaTypes';
+
 export type { Theme, ThemeName, ThemePair } from './types/ThemeTypes';
 
 // Theme management types
@@ -52,13 +52,9 @@ export type {
 export type {
   CustomVariantConfig,
   PredefinedVariantName,
-  SimpleThemeAwareVariantConfig,
-  ThemeAwareVariantBuilder,
-  ThemeAwareVariantStyle,
   ToastVariantDefinition,
   VariantBuilder,
   VariantName,
-  VariantStyle,
 } from './types/VariantTypes';
 
 // Icon configuration types - What users need for custom icons

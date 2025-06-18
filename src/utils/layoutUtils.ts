@@ -74,9 +74,10 @@ const calculateSpacing = (
   spacingType: 'compact' | 'normal' | 'spacious',
   theme: Theme
 ) => {
-  const baseIconMargin = theme.spacing.sm;
-  const baseContainerPadding = theme.spacing.md;
-  const baseTextPadding = theme.spacing.xs;
+  // Use the new toast-specific spacing structure
+  const baseIconMargin = theme.spacing.icon;
+  const baseContainerPadding = theme.spacing.container;
+  const baseTextPadding = theme.spacing.text;
 
   switch (spacingType) {
     case 'compact':

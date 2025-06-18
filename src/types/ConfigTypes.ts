@@ -2,13 +2,72 @@
 import type { ProgressBarConfig } from '../components/ToastProgressBar/ToastProgressBar.types';
 import type { AccessibilityConfig } from './AccessibilityTypes';
 import type { IconConfig } from './IconTypes';
-import type { SafeAreaConfig } from './SafeAreaTypes';
 import type { ToastVariant } from './ToastTypes';
 
+// Essential Safe Area Types (simplified from former SafeAreaTypes.ts)
+export interface SafeAreaInsets {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+}
+
+export interface SafeAreaCalculation {
+  position: 'top' | 'bottom';
+  topMargin: number;
+  bottomMargin: number;
+  leftMargin: number;
+  rightMargin: number;
+  maxWidth: number;
+  recommendedPosition: 'top' | 'center' | 'bottom';
+  deviceOptimizations: Record<string, any>;
+}
+
+export interface DeviceInfo {
+  platform: 'ios' | 'android';
+  model: string;
+  brand: string;
+  deviceId: string;
+  systemVersion: string;
+  deviceType: DeviceType;
+  screenWidth: number;
+  screenHeight: number;
+  screenData: any;
+  hasNotch: boolean;
+  hasHomeButton: boolean;
+  hasDynamicIsland: boolean;
+  hasSpecialScreen: boolean;
+  statusBarHeight: number;
+  homeIndicatorHeight: number;
+}
+
+export type DeviceType =
+  | 'iphone-se'
+  | 'iphone-standard'
+  | 'iphone-notch'
+  | 'iphone-dynamic-island'
+  | 'ipad'
+  | 'android-standard'
+  | 'android-punch-hole'
+  | 'android-tablet'
+  | 'unknown';
+
+/**
+ * Enhanced vertical offset configuration with safe area integration
+ */
 export interface VerticalOffsetConfig {
-  top?: number; // Additional top margin (positive = more space from top)
-  bottom?: number; // Additional bottom margin (positive = more space from bottom)
-  global?: number; // Global offset applied to both top and bottom
+  /** Additional top margin (positive = more space from top) */
+  top?: number;
+  /** Additional bottom margin (positive = more space from bottom) */
+  bottom?: number;
+  /** Global offset applied to both top and bottom */
+  global?: number;
+  /** Whether to automatically adapt to device safe areas (default: true) */
+  adaptToDevice?: boolean;
+  /** Minimum margin to maintain (overrides automatic calculations if needed) */
+  minMargin?: number;
+  /** Maximum margin to cap at (prevents excessive spacing) */
+  maxMargin?: number;
 }
 
 export interface ToastLayoutConfig {
@@ -45,9 +104,7 @@ export interface ToastProviderConfig {
   defaultVariant?: ToastVariant; // Default variant for all toasts
   layout?: ToastLayoutConfig; // Layout configuration
   icons?: IconConfig; // Icon configuration
-  globalAnimationConfig?: AnimationConfig;
-  safeAreaConfig?: SafeAreaConfig;
-  // Vertical offset configuration
+  // Enhanced vertical offset configuration with safe area integration
   verticalOffset?: VerticalOffsetConfig;
   // Progress bar configuration
   progressBar?: ProgressBarConfig;

@@ -1,5 +1,5 @@
 // ToastContainer - Component-specific types
-import type { SafeAreaCalculation } from '../../types/SafeAreaTypes';
+import type { SafeAreaCalculation } from '../../types/ConfigTypes';
 import type { Theme } from '../../types/ThemeTypes';
 import type { Toast } from '../../types/ToastTypes';
 

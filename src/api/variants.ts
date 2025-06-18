@@ -3,8 +3,6 @@ import { VariantManager } from '../services/VariantManager';
 import type {
   CustomVariantConfig,
   PredefinedVariantName,
-  SimpleThemeAwareVariantConfig,
-  ThemeAwareVariantBuilder,
   ToastVariantDefinition,
   VariantBuilder,
   VariantName,
@@ -25,10 +23,20 @@ export const variants = {
    * variants.register({
    *   name: 'my-custom-variant',
    *   displayName: 'My Custom Variant',
-   *   style: {
-   *     backgroundColor: '#FF6B6B',
-   *     textColor: '#FFFFFF',
-   *     borderRadius: 20,
+   *   theme: {
+   *     light: {
+   *       name: 'my-custom-light',
+   *       mode: 'light',
+   *       colors: {
+   *         surface: '#FF6B6B',
+   *         onSurface: '#FFFFFF',
+   *         // ... other theme properties
+   *       },
+   *       // ... rest of theme
+   *     },
+   *     dark: {
+   *       // ... dark theme
+   *     }
    *   },
    *   behavior: {
    *     defaultDuration: 5000,
@@ -47,65 +55,18 @@ export const variants = {
    * ```typescript
    * variants.registerCustom({
    *   name: 'success-card',
-   *   extends: 'card',
-   *   style: {
-   *     backgroundColor: '#10B981',
-   *     textColor: '#FFFFFF',
+   *   extends: 'success',
+   *   themeOverrides: {
+   *     light: {
+   *       borderRadius: 'xl',
+   *       shadows: '0 8px 16px rgba(0,0,0,0.1)',
+   *     }
    *   }
    * });
    * ```
    */
   registerCustom: (config: CustomVariantConfig): void => {
     variantManager.registerCustomVariant(config);
-  },
-
-  /**
-   * Register a theme-aware variant with separate styles for light and dark modes
-   * @param config - Theme-aware variant configuration
-   * @example
-   * ```typescript
-   * variants.registerThemeAware({
-   *   name: 'my-adaptive-card',
-   *   displayName: 'My Adaptive Card',
-   *   light: {
-   *     backgroundColor: '#F3F4F6',
-   *     textColor: '#1F2937',
-   *     borderColor: '#D1D5DB',
-   *   },
-   *   dark: {
-   *     backgroundColor: '#1F2937',
-   *     textColor: '#F9FAFB',
-   *     borderColor: '#374151',
-   *   },
-   *   behavior: {
-   *     defaultDuration: 4000,
-   *   }
-   * });
-   * ```
-   */
-  registerThemeAware: (config: SimpleThemeAwareVariantConfig): void => {
-    variantManager.registerThemeAwareVariant(config);
-  },
-
-  /**
-   * Register a variant that automatically adapts to the current theme
-   * @param config - Variant config with auto-adapting style
-   * @example
-   * ```typescript
-   * variants.registerAdaptive({
-   *   name: 'auto-success',
-   *   extends: 'success-filled',
-   *   style: {
-   *     // These colors will be automatically adjusted for light/dark themes
-   *     backgroundColor: 'success', // Uses theme's success color
-   *     textColor: 'onSurface',     // Uses theme's onSurface color
-   *     borderColor: 'border',      // Uses theme's border color
-   *   }
-   * });
-   * ```
-   */
-  registerAdaptive: (config: SimpleThemeAwareVariantConfig): void => {
-    variantManager.registerThemeAwareVariant(config);
   },
 
   /**
@@ -148,10 +109,7 @@ export const variants = {
    * ```typescript
    * const myVariant = variants.create()
    *   .setName('my-variant')
-   *   .setBackgroundColor('#3B82F6')
-   *   .setTextColor('#FFFFFF')
-   *   .setBorderRadius(12)
-   *   .setIconPosition('left')
+   *   .setTheme(myCustomTheme)
    *   .setDefaultDuration(4000)
    *   .build();
    *
@@ -160,34 +118,6 @@ export const variants = {
    */
   create: (): VariantBuilder => {
     return variantManager.createVariant();
-  },
-
-  /**
-   * Create a theme-aware variant using the enhanced builder pattern
-   * @returns ThemeAwareVariantBuilder instance
-   * @example
-   * ```typescript
-   * const adaptiveVariant = variants.createThemeAware()
-   *   .setName('adaptive-card')
-   *   .setDisplayName('Adaptive Card')
-   *   .forLightMode({
-   *     backgroundColor: '#FFFFFF',
-   *     textColor: '#1F2937',
-   *     borderColor: '#E5E7EB',
-   *   })
-   *   .forDarkMode({
-   *     backgroundColor: '#1F2937',
-   *     textColor: '#F9FAFB',
-   *     borderColor: '#374151',
-   *   })
-   *   .setBehavior({ defaultDuration: 5000 })
-   *   .build();
-   *
-   * variants.register(adaptiveVariant);
-   * ```
-   */
-  createThemeAware: (): ThemeAwareVariantBuilder => {
-    return variantManager.createThemeAwareVariant();
   },
 
   /**
@@ -225,6 +155,45 @@ export const variants = {
   exists: (name: VariantName): boolean => {
     return variantManager.getVariant(name) !== null;
   },
+
+  /**
+   * Reset a user override for a predefined variant
+   * This allows the variant to be theme-aware again
+   * @param variantName - Name of the predefined variant to reset
+   * @example
+   * ```typescript
+   * // User overrode success variant
+   * variants.register({
+   *   name: 'success',
+   *   theme: myCustomTheme,
+   *   // ... other config
+   * });
+   *
+   * // Later, reset to make it theme-aware again
+   * variants.resetOverride('success');
+   * ```
+   */
+  resetOverride: (variantName: PredefinedVariantName): void => {
+    variantManager.resetVariantOverride(variantName);
+  },
+
+  /**
+   * Check if a predefined variant has been overridden by the user
+   * @param variantName - Name of the predefined variant to check
+   * @returns True if overridden, false if still theme-aware
+   * @example
+   * ```typescript
+   * const isOverridden = variants.isOverridden('success');
+   * if (isOverridden) {
+   *   console.log('success variant has been customized by user');
+   * } else {
+   *   console.log('success variant adapts to current theme');
+   * }
+   * ```
+   */
+  isOverridden: (variantName: PredefinedVariantName): boolean => {
+    return variantManager.isVariantOverridden(variantName);
+  },
 };
 
 // Export predefined variant names for convenience
@@ -232,19 +201,17 @@ export const PREDEFINED_VARIANTS: Record<
   PredefinedVariantName,
   PredefinedVariantName
 > = {
-  'default': 'default',
-  'success-filled': 'success-filled',
-  'error-filled': 'error-filled',
-  'warning-filled': 'warning-filled',
-  'info-filled': 'info-filled',
+  default: 'default',
+  success: 'success',
+  error: 'error',
+  warning: 'warning',
+  info: 'info',
 } as const;
 
 // Export types for external use
 export type {
   CustomVariantConfig,
   PredefinedVariantName,
-  SimpleThemeAwareVariantConfig,
-  ThemeAwareVariantBuilder,
   ToastVariantDefinition,
   VariantBuilder,
   VariantName,

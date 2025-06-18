@@ -1,74 +1,48 @@
 // Base Theme Foundation - Shared design tokens for all themes
-import type {
-  ThemeAnimations,
-  ThemeBorderRadius,
-  ThemeSpacing,
-  ThemeTypography,
-} from '../../types/ThemeTypes';
+import type { ThemeSpacing, ThemeTypography } from '../../types/ThemeTypes';
 
-// Shared spacing system (consistent across all themes)
+// Toast-specific spacing system (based on layoutUtils usage)
 export const baseSpacing: ThemeSpacing = {
-  xs: 4,
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 48,
+  icon: 12, // Space around icons
+  container: 16, // Container padding
+  text: 8, // Space between text elements
 };
 
-// Shared border radius system
-export const baseBorderRadius: ThemeBorderRadius = {
-  none: 0,
-  sm: 4,
-  md: 8,
-  lg: 12,
-  xl: 16,
-  full: 999,
-};
-
-// Shared animation system
-export const baseAnimations: ThemeAnimations = {
-  duration: {
-    fast: 150,
-    normal: 300,
-    slow: 500,
-  },
-  easing: {
-    linear: 'linear',
-    easeIn: 'ease-in',
-    easeOut: 'ease-out',
-    easeInOut: 'ease-in-out',
-    spring: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-  },
-};
-
-// Base typography system
+// Simplified typography system for toasts
 export const baseTypography: ThemeTypography = {
-  titleFontFamily: 'System',
-  bodyFontFamily: 'System',
-  titleFontSize: 16,
-  bodyFontSize: 14,
-  captionFontSize: 12,
-  fontWeight: {
-    light: '300',
-    regular: '400',
-    medium: '500',
-    semiBold: '600',
-    bold: '700',
+  title: {
+    size: 16,
+    weight: '600',
+    lineHeight: 20,
   },
-  titleLineHeight: 20,
-  bodyLineHeight: 18,
-  captionLineHeight: 16,
+  description: {
+    size: 14,
+    weight: '400',
+    lineHeight: 18,
+  },
 };
 
 // Common color utilities
 export const colorUtils = {
   // Add alpha to hex color
-  addAlpha: (hex: string, alpha: number): string => {
-    const alphaHex = Math.round(alpha * 255)
-      .toString(16)
-      .padStart(2, '0');
-    return `${hex}${alphaHex}`;
+  addAlpha: (color: string, alpha: number): string => {
+    // Handle hex colors
+    if (color.startsWith('#')) {
+      const hex = color.slice(1);
+      const r = parseInt(hex.slice(0, 2), 16);
+      const g = parseInt(hex.slice(2, 4), 16);
+      const b = parseInt(hex.slice(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    // Handle rgb/rgba colors - extract numbers and apply alpha
+    const rgbMatch = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+    if (rgbMatch) {
+      return `rgba(${rgbMatch[1]}, ${rgbMatch[2]}, ${rgbMatch[3]}, ${alpha})`;
+    }
+
+    // Fallback for other formats
+    return color;
   },
 
   // Lighten/darken color (simple utility)
@@ -93,18 +67,27 @@ export const colorUtils = {
   },
 };
 
-// Base blur values for glassmorphism
-export const baseBlur = {
-  none: 0,
-  sm: 10,
-  md: 20,
-  lg: 40,
-};
-
-// Base opacity values
-export const baseOpacity = {
-  disabled: 0.38,
-  hover: 0.08,
-  active: 0.12,
-  overlay: 0.16,
+/**
+ * Base progress bar configuration - shared foundation
+ */
+export const baseProgressBar = {
+  track: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 1,
+    height: 2,
+    opacity: 1,
+  },
+  bar: {
+    borderRadius: 1,
+    height: 2,
+  },
+  animation: {
+    duration: 100,
+    easing: 'linear' as const,
+  },
+  positioning: {
+    defaultPosition: 'bottom' as const,
+    marginTop: 0,
+    marginBottom: 0,
+  },
 };

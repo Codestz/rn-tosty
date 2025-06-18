@@ -1,9 +1,11 @@
 import { DefaultTheme } from './presets/DefaultTheme';
-import { LiquidGlassTheme } from './presets/LiquidGlassTheme';
-import { MinimalistTheme } from './presets/MinimalistTheme';
+import { ForestGlowTheme } from './presets/ForestGlowTheme';
+import { OceanBreezeTheme } from './presets/OceanBreezeTheme';
+import { WarmSunsetTheme } from './presets/WarmSunsetTheme';
 
 export const Themes = {
   default: DefaultTheme,
-  minimalist: MinimalistTheme,
-  liquidGlass: LiquidGlassTheme,
+  warmSunset: WarmSunsetTheme,
+  oceanBreeze: OceanBreezeTheme,
+  forestGlow: ForestGlowTheme,
 } as const;

@@ -4,7 +4,7 @@ import DeviceInfo from 'react-native-device-info';
 import type {
   DeviceInfo as DeviceInfoType,
   DeviceType,
-} from '../types/SafeAreaTypes';
+} from '../types/ConfigTypes';
 
 export class DeviceDetector {
   private static instance: DeviceDetector;

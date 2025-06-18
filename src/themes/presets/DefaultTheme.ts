@@ -1,7 +1,7 @@
 // Default Theme - Clean, contemporary design perfect for most apps
 import type { Theme, ThemePair } from '../../types/ThemeTypes';
 import {
-  baseBorderRadius,
+  baseProgressBar,
   baseSpacing,
   baseTypography,
   colorUtils,
@@ -26,42 +26,36 @@ const defaultLight: Theme = {
     // Background system
     background: '#FFFFFF', // Pure white
     surface: '#F8FAFC', // Slate 50
-    surfaceVariant: '#F1F5F9', // Slate 100
 
     // Text system
     onPrimary: '#FFFFFF', // White on primary
     onSecondary: '#FFFFFF', // White on secondary
     onSurface: '#1E293B', // Slate 800
-    onSurfaceVariant: '#475569', // Slate 600
 
     // Border and dividers
     border: '#E2E8F0', // Slate 200
-    borderVariant: '#CBD5E1', // Slate 300
 
     // Overlay and shadows
     overlay: colorUtils.addAlpha('#000000', 0.5),
     shadow: '#000000',
   },
 
-  typography: {
-    ...baseTypography,
-    titleFontSize: 16,
-    bodyFontSize: 14,
-    fontWeight: {
-      ...baseTypography.fontWeight,
-      medium: '600', // Slightly bolder for modern look
-    },
-  },
-
+  typography: baseTypography,
   spacing: baseSpacing,
-  borderRadius: baseBorderRadius,
-
+  borderRadius: 'md',
   shadows: {
-    none: 'none',
-    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    shadowColor: '#000000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  progressBar: {
+    ...baseProgressBar,
+    track: {
+      ...baseProgressBar.track,
+      backgroundColor: colorUtils.addAlpha('#E2E8F0', 0.5), // Slightly more visible track
+    },
   },
 };
 
@@ -84,42 +78,36 @@ const defaultDark: Theme = {
     // Background system
     background: '#0F172A', // Slate 900
     surface: '#1E293B', // Slate 800
-    surfaceVariant: '#334155', // Slate 700
 
     // Text system
     onPrimary: '#0F172A', // Dark on primary
     onSecondary: '#0F172A', // Dark on secondary
     onSurface: '#F8FAFC', // Slate 50
-    onSurfaceVariant: '#CBD5E1', // Slate 300
 
     // Border and dividers
     border: '#475569', // Slate 600
-    borderVariant: '#64748B', // Slate 500
 
     // Overlay and shadows
     overlay: colorUtils.addAlpha('#000000', 0.7),
     shadow: '#000000',
   },
 
-  typography: {
-    ...baseTypography,
-    titleFontSize: 16,
-    bodyFontSize: 14,
-    fontWeight: {
-      ...baseTypography.fontWeight,
-      medium: '600',
-    },
-  },
-
+  typography: baseTypography,
   spacing: baseSpacing,
-  borderRadius: baseBorderRadius,
-
+  borderRadius: 'md',
   shadows: {
-    none: 'none',
-    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.3)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3)',
-    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3)',
-    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4)',
+    shadowColor: '#000000',
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  progressBar: {
+    ...baseProgressBar,
+    track: {
+      ...baseProgressBar.track,
+      backgroundColor: colorUtils.addAlpha('#475569', 0.6), // Slightly more visible dark track
+    },
   },
 };
 

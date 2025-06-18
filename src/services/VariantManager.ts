@@ -1,96 +1,27 @@
-// Variant Manager - Comprehensive variant management system
-import type { Theme } from '../types/ThemeTypes';
+// Variant Manager - Simplified theme-based variant management system
+import type { Theme, ThemePair } from '../types/ThemeTypes';
 import type { ToastType } from '../types/ToastTypes';
 import type {
   CustomVariantConfig,
-  ThemeAwareVariantBuilder as IThemeAwareVariantBuilder,
   VariantBuilder as IVariantBuilder,
   VariantManager as IVariantManager,
   PredefinedVariantName,
   ResolvedVariant,
-  SimpleThemeAwareVariantConfig,
-  ThemeAwareVariantStyle,
   ToastVariantDefinition,
   VariantBehavior,
+  VariantExtends,
   VariantRegistry,
   VariantResolutionContext,
   VariantStyle,
 } from '../types/VariantTypes';
-import { predefinedVariants } from '../variants/PredefinedVariants';
+import {
+  createPredefinedVariants,
+  predefinedVariants,
+} from '../variants/PredefinedVariants';
 
-// Theme-aware Variant Builder implementation
-class ThemeAwareVariantBuilder implements IThemeAwareVariantBuilder {
-  private variant: Partial<ToastVariantDefinition> = {
-    themeAwareStyle: {},
-    behavior: {},
-    iconConfig: {},
-  };
-
-  setName(name: string): IThemeAwareVariantBuilder {
-    this.variant.name = name;
-    return this;
-  }
-
-  setDisplayName(displayName: string): IThemeAwareVariantBuilder {
-    this.variant.displayName = displayName;
-    return this;
-  }
-
-  setDescription(description: string): IThemeAwareVariantBuilder {
-    this.variant.description = description;
-    return this;
-  }
-
-  forLightMode(style: VariantStyle): IThemeAwareVariantBuilder {
-    if (!this.variant.themeAwareStyle) {
-      this.variant.themeAwareStyle = {};
-    }
-    this.variant.themeAwareStyle.light = style;
-    return this;
-  }
-
-  forDarkMode(style: VariantStyle): IThemeAwareVariantBuilder {
-    if (!this.variant.themeAwareStyle) {
-      this.variant.themeAwareStyle = {};
-    }
-    this.variant.themeAwareStyle.dark = style;
-    return this;
-  }
-
-  forAllModes(style: VariantStyle): IThemeAwareVariantBuilder {
-    if (!this.variant.themeAwareStyle) {
-      this.variant.themeAwareStyle = {};
-    }
-    this.variant.themeAwareStyle.style = style;
-    return this;
-  }
-
-  setBehavior(behavior: VariantBehavior): IThemeAwareVariantBuilder {
-    this.variant.behavior = behavior;
-    return this;
-  }
-
-  extends(parentVariantName: string): IThemeAwareVariantBuilder {
-    this.variant.extends = parentVariantName;
-    return this;
-  }
-
-  build(): ToastVariantDefinition {
-    if (!this.variant.name) {
-      throw new Error('Variant name is required');
-    }
-    if (!this.variant.themeAwareStyle) {
-      throw new Error('Variant theme-aware style is required');
-    }
-
-    return this.variant as ToastVariantDefinition;
-  }
-}
-
-// Variant Builder implementation
+// Unified Variant Builder implementation
 class VariantBuilder implements IVariantBuilder {
   private variant: Partial<ToastVariantDefinition> = {
-    style: {},
     behavior: {},
     iconConfig: {},
   };
@@ -110,88 +41,44 @@ class VariantBuilder implements IVariantBuilder {
     return this;
   }
 
-  // Enhanced style methods for theme-aware styling
-  setLightStyle(style: VariantStyle): IVariantBuilder {
-    if (!this.variant.themeAwareStyle) {
-      this.variant.themeAwareStyle = {};
-    }
-    this.variant.themeAwareStyle.light = style;
-    return this;
-  }
-
-  setDarkStyle(style: VariantStyle): IVariantBuilder {
-    if (!this.variant.themeAwareStyle) {
-      this.variant.themeAwareStyle = {};
-    }
-    this.variant.themeAwareStyle.dark = style;
-    return this;
-  }
-
-  setAdaptiveStyle(style: VariantStyle): IVariantBuilder {
-    if (!this.variant.themeAwareStyle) {
-      this.variant.themeAwareStyle = {};
-    }
-    this.variant.themeAwareStyle.style = style;
-    return this;
-  }
-
-  // Legacy style methods (for backward compatibility)
-  setBackgroundColor(color: string): IVariantBuilder {
-    this.variant.style!.backgroundColor = color;
-    return this;
-  }
-
-  setTextColor(color: string): IVariantBuilder {
-    this.variant.style!.textColor = color;
-    return this;
-  }
-
-  setBorderColor(color: string): IVariantBuilder {
-    this.variant.style!.borderColor = color;
-    return this;
-  }
-
-  setBorderWidth(width: number): IVariantBuilder {
-    this.variant.style!.borderWidth = width;
-    return this;
-  }
-
-  setBorderRadius(radius: number): IVariantBuilder {
-    this.variant.style!.borderRadius = radius;
-    return this;
-  }
-
-  setPadding(
-    padding: number | { horizontal?: number; vertical?: number }
-  ): IVariantBuilder {
-    this.variant.style!.padding = padding;
-    return this;
-  }
-
-  setIconPosition(
-    position: 'left' | 'right' | 'top' | 'none'
-  ): IVariantBuilder {
-    this.variant.style!.iconPosition = position;
-    return this;
-  }
-
-  setIconSize(size: 'small' | 'medium' | 'large' | number): IVariantBuilder {
-    this.variant.style!.iconSize = size;
-    return this;
-  }
-
-  setIconColor(color: string): IVariantBuilder {
-    this.variant.style!.iconColor = color;
+  setTheme(theme: Theme | ThemePair): IVariantBuilder {
+    this.variant.theme = theme;
     return this;
   }
 
   setAutoDismiss(autoDismiss: boolean): IVariantBuilder {
-    this.variant.behavior!.autoDismiss = autoDismiss;
+    if (!this.variant.behavior) this.variant.behavior = {};
+    this.variant.behavior.autoDismiss = autoDismiss;
     return this;
   }
 
   setDefaultDuration(duration: number): IVariantBuilder {
-    this.variant.behavior!.defaultDuration = duration;
+    if (!this.variant.behavior) this.variant.behavior = {};
+    this.variant.behavior.defaultDuration = duration;
+    return this;
+  }
+
+  setDismissOnTap(dismissOnTap: boolean): IVariantBuilder {
+    if (!this.variant.behavior) this.variant.behavior = {};
+    this.variant.behavior.dismissOnTap = dismissOnTap;
+    return this;
+  }
+
+  setPriority(priority: 'low' | 'medium' | 'high' | 'urgent'): IVariantBuilder {
+    if (!this.variant.behavior) this.variant.behavior = {};
+    this.variant.behavior.priority = priority;
+    return this;
+  }
+
+  setShowIcon(showIcon: boolean): IVariantBuilder {
+    if (!this.variant.iconConfig) this.variant.iconConfig = {};
+    this.variant.iconConfig.showIcon = showIcon;
+    return this;
+  }
+
+  setIconComponent(iconComponent: any): IVariantBuilder {
+    if (!this.variant.iconConfig) this.variant.iconConfig = {};
+    this.variant.iconConfig.iconComponent = iconComponent;
     return this;
   }
 
@@ -199,26 +86,13 @@ class VariantBuilder implements IVariantBuilder {
     type: ToastType,
     style: Partial<VariantStyle>
   ): IVariantBuilder {
-    if (!this.variant.typeOverrides) {
-      this.variant.typeOverrides = {};
-    }
+    if (!this.variant.typeOverrides) this.variant.typeOverrides = {};
     this.variant.typeOverrides[type] = style;
     return this;
   }
 
-  setThemeOverride(
-    themeName: string,
-    style: Partial<VariantStyle>
-  ): IVariantBuilder {
-    if (!this.variant.themeOverrides) {
-      this.variant.themeOverrides = {};
-    }
-    this.variant.themeOverrides[themeName] = style;
-    return this;
-  }
-
-  extends(parentVariantName: string): IVariantBuilder {
-    this.variant.extends = parentVariantName;
+  extends(extendsFrom: VariantExtends): IVariantBuilder {
+    this.variant.extends = extendsFrom;
     return this;
   }
 
@@ -226,24 +100,21 @@ class VariantBuilder implements IVariantBuilder {
     if (!this.variant.name) {
       throw new Error('Variant name is required');
     }
-    if (!this.variant.style && !this.variant.themeAwareStyle) {
-      throw new Error('Variant style or theme-aware style is required');
-    }
 
     return this.variant as ToastVariantDefinition;
   }
 }
 
-// Variant Manager implementation
+// Simplified Variant Manager implementation
 export class VariantManager implements IVariantManager {
   private static instance: VariantManager;
   private registry: VariantRegistry;
+  private userOverrides: Set<string> = new Set(); // Track which variants users have overridden
 
   private constructor() {
     this.registry = {
       predefined: { ...predefinedVariants },
       custom: {},
-      themeVariants: {},
     };
   }
 
@@ -254,57 +125,37 @@ export class VariantManager implements IVariantManager {
     return VariantManager.instance;
   }
 
-  // Registration methods
-  registerVariant(variant: ToastVariantDefinition): void {
-    if (!this.validateVariant(variant)) {
-      throw new Error(`Invalid variant definition: ${variant.name}`);
-    }
+  /**
+   * Update predefined variants to use a new theme
+   * This makes success/error/warning/info variants adapt to the current theme
+   * @param theme - The theme to base predefined variants on
+   */
+  updatePredefinedVariantsTheme(theme: ThemePair): void {
+    const newPredefinedVariants = createPredefinedVariants(theme);
 
-    // Check if it's a predefined variant name
-    if (variant.name in predefinedVariants) {
+    // Only update variants that haven't been overridden by users
+    Object.entries(newPredefinedVariants).forEach(([name, variant]) => {
+      if (!this.userOverrides.has(name)) {
+        this.registry.predefined[name as PredefinedVariantName] = variant;
+      }
+    });
+  }
+
+  registerVariant(variant: ToastVariantDefinition): void {
+    if (this.registry.predefined[variant.name as PredefinedVariantName]) {
+      // User is overriding a predefined variant
+      this.userOverrides.add(variant.name);
       this.registry.predefined[variant.name as PredefinedVariantName] = variant;
     } else {
+      // Add as custom variant
       this.registry.custom[variant.name] = variant;
     }
   }
 
   registerCustomVariant(config: CustomVariantConfig): void {
-    const variant: ToastVariantDefinition = {
-      ...config,
-      name: config.name,
-    };
-    this.registerVariant(variant);
+    this.registry.custom[config.name] = config;
   }
 
-  registerThemeAwareVariant(config: SimpleThemeAwareVariantConfig): void {
-    const themeAwareStyle: ThemeAwareVariantStyle = {};
-
-    // Convert simplified config to internal format
-    if (config.light) {
-      themeAwareStyle.light = config.light;
-    }
-    if (config.dark) {
-      themeAwareStyle.dark = config.dark;
-    }
-    if (config.style) {
-      themeAwareStyle.style = config.style;
-    }
-
-    const variant: ToastVariantDefinition = {
-      name: config.name,
-      displayName: config.displayName,
-      description: config.description,
-      extends: config.extends,
-      themeAwareStyle,
-      behavior: config.behavior,
-      typeOverrides: config.typeOverrides,
-      iconConfig: config.iconConfig,
-    };
-
-    this.registerVariant(variant);
-  }
-
-  // Retrieval methods
   getVariant(name: string): ToastVariantDefinition | null {
     return (
       this.registry.predefined[name as PredefinedVariantName] ||
@@ -324,11 +175,30 @@ export class VariantManager implements IVariantManager {
     PredefinedVariantName,
     ToastVariantDefinition
   > {
-    return { ...this.registry.predefined };
+    return this.registry.predefined;
   }
 
   getCustomVariants(): Record<string, ToastVariantDefinition> {
-    return { ...this.registry.custom };
+    return this.registry.custom;
+  }
+
+  /**
+   * Reset a user override for a predefined variant
+   * This allows the variant to be theme-aware again
+   * @param variantName - Name of the variant to reset
+   */
+  resetVariantOverride(variantName: PredefinedVariantName): void {
+    this.userOverrides.delete(variantName);
+    // Variant will be updated on next theme change
+  }
+
+  /**
+   * Check if a predefined variant has been overridden by the user
+   * @param variantName - Name of the variant to check
+   * @returns True if overridden, false otherwise
+   */
+  isVariantOverridden(variantName: PredefinedVariantName): boolean {
+    return this.userOverrides.has(variantName);
   }
 
   resolveVariant(
@@ -336,296 +206,171 @@ export class VariantManager implements IVariantManager {
     context: VariantResolutionContext
   ): ResolvedVariant {
     let variant = this.getVariant(variantName);
+
     if (!variant) {
-      // Fallback to default variant
-      variant = this.getVariant('default');
-      if (!variant) {
-        throw new Error('Default variant not found');
-      }
+      throw new Error(`Variant '${variantName}' not found`);
     }
 
-    // Apply inheritance
-    variant = this.resolveInheritance(variant);
+    // Resolve inheritance
+    variant = this.resolveInheritance(variant, context);
 
-    // Apply theme-aware styles
-    variant = this.applyThemeAwareStyles(variant, context);
+    // Get the appropriate theme for current mode
+    const resolvedTheme = this.resolveThemeForMode(
+      variant.theme || context.currentTheme,
+      context.isDarkMode
+    );
 
-    // Apply theme overrides (legacy)
-    variant = this.applyThemeOverrides(variant, context.theme);
-
-    // Apply type overrides
+    // Apply type-specific overrides
     variant = this.applyTypeOverrides(variant, context.toastType);
 
-    // Resolve theme color references
-    variant = this.resolveThemeReferences(variant, context.theme);
+    // Convert theme to style for backward compatibility
+    const style = this.themeToStyle(resolvedTheme);
 
     return {
       name: variant.name,
-      style: this.getCompleteStyle(variant.style),
+      theme: resolvedTheme,
+      style: this.getCompleteStyle(style),
       behavior: this.getCompleteBehavior(variant.behavior),
       iconConfig: this.getCompleteIconConfig(variant.iconConfig),
     };
   }
 
   validateVariant(variant: ToastVariantDefinition): boolean {
-    if (!variant.name) return false;
-    if (!variant.style && !variant.themeAwareStyle) return false;
-    // Additional validation can be added here
-    return true;
-  }
-
-  applyThemeToVariant(
-    variant: ToastVariantDefinition,
-    theme: Theme
-  ): ToastVariantDefinition {
-    // Apply theme-specific styling
-    const context: VariantResolutionContext = {
-      theme,
-      toastType: 'info', // Default type for theme application
-      isDarkMode: theme.mode === 'dark',
-    };
-
-    return this.applyThemeAwareStyles(variant, context);
+    return !!variant.name && (!!variant.theme || !!variant.extends);
   }
 
   createVariant(): IVariantBuilder {
     return new VariantBuilder();
   }
 
-  createThemeAwareVariant(): IThemeAwareVariantBuilder {
-    return new ThemeAwareVariantBuilder();
-  }
-
-  // Private helper methods
-  private applyThemeAwareStyles(
-    variant: ToastVariantDefinition,
-    context: VariantResolutionContext
-  ): ToastVariantDefinition {
-    if (!variant.themeAwareStyle) {
-      return variant;
-    }
-
-    const { themeAwareStyle } = variant;
-    let resolvedStyle: VariantStyle = {};
-
-    // Apply base adaptive style first
-    if (themeAwareStyle.style) {
-      resolvedStyle = { ...themeAwareStyle.style };
-    }
-
-    // Apply mode-specific styles
-    const modeStyle = context.isDarkMode
-      ? themeAwareStyle.dark
-      : themeAwareStyle.light;
-
-    if (modeStyle) {
-      resolvedStyle = { ...resolvedStyle, ...modeStyle };
-    }
-
-    // Apply theme-specific styles if available
-    if (themeAwareStyle.themeStyles) {
-      const themeSpecific = themeAwareStyle.themeStyles[context.theme.name];
-      if (themeSpecific) {
-        const themeSpecificModeStyle = context.isDarkMode
-          ? themeSpecific.dark
-          : themeSpecific.light;
-
-        if (themeSpecificModeStyle) {
-          resolvedStyle = { ...resolvedStyle, ...themeSpecificModeStyle };
-        }
-      }
-    }
-
-    return {
-      ...variant,
-      style: resolvedStyle,
-    };
-  }
-
   private resolveInheritance(
-    variant: ToastVariantDefinition
+    variant: ToastVariantDefinition,
+    _context: VariantResolutionContext
   ): ToastVariantDefinition {
     if (!variant.extends) {
       return variant;
     }
 
-    const parentVariant = this.getVariant(variant.extends);
-    if (!parentVariant) {
-      console.warn(
-        `Parent variant "${variant.extends}" not found for "${variant.name}"`
-      );
-      return variant;
+    let parentVariant: ToastVariantDefinition | null;
+    let parentTheme: Theme | ThemePair | undefined;
+
+    if (typeof variant.extends === 'string') {
+      // Simple string inheritance
+      parentVariant = this.getVariant(variant.extends);
+      if (!parentVariant) {
+        throw new Error(`Parent variant '${variant.extends}' not found`);
+      }
+      parentTheme = parentVariant.theme;
+    } else {
+      // Object inheritance with specific mode
+      parentVariant = this.getVariant(variant.extends.variant);
+      if (!parentVariant) {
+        throw new Error(
+          `Parent variant '${variant.extends.variant}' not found`
+        );
+      }
+
+      // Get specific mode from parent theme if specified
+      if (variant.extends.mode && parentVariant.theme) {
+        if ('light' in parentVariant.theme && 'dark' in parentVariant.theme) {
+          // Parent has ThemePair, extract specific mode
+          parentTheme = parentVariant.theme[variant.extends.mode];
+        } else {
+          // Parent has single Theme, use as-is
+          parentTheme = parentVariant.theme as Theme;
+        }
+      } else {
+        parentTheme = parentVariant.theme;
+      }
     }
 
-    // Recursively resolve parent inheritance
-    const resolvedParent = this.resolveInheritance(parentVariant);
-
-    // Merge parent and child properties
+    // Merge with inheritance
     return {
-      ...resolvedParent,
+      ...parentVariant,
       ...variant,
-      name: variant.name, // Always use child name
-      style: {
-        ...resolvedParent.style,
-        ...variant.style,
-      },
+      theme: variant.theme || parentTheme,
       behavior: {
-        ...resolvedParent.behavior,
+        ...parentVariant.behavior,
         ...variant.behavior,
       },
-      typeOverrides: {
-        ...resolvedParent.typeOverrides,
-        ...variant.typeOverrides,
-      },
-      themeOverrides: {
-        ...resolvedParent.themeOverrides,
-        ...variant.themeOverrides,
-      },
-      themeAwareStyle:
-        variant.themeAwareStyle || resolvedParent.themeAwareStyle,
       iconConfig: {
-        ...resolvedParent.iconConfig,
+        ...parentVariant.iconConfig,
         ...variant.iconConfig,
+      },
+      typeOverrides: {
+        ...parentVariant.typeOverrides,
+        ...variant.typeOverrides,
       },
     };
   }
 
-  private applyThemeOverrides(
-    variant: ToastVariantDefinition,
-    theme: Theme
-  ): ToastVariantDefinition {
-    if (!variant.themeOverrides) {
-      return variant;
+  private resolveThemeForMode(
+    theme: Theme | ThemePair | undefined,
+    isDarkMode: boolean
+  ): Theme {
+    if (!theme) {
+      throw new Error('No theme available for variant');
     }
 
-    const themeOverride = variant.themeOverrides[theme.name];
-    if (!themeOverride) {
-      return variant;
+    if ('light' in theme && 'dark' in theme) {
+      // ThemePair - return appropriate mode
+      return isDarkMode ? theme.dark : theme.light;
     }
 
-    return {
-      ...variant,
-      style: {
-        ...variant.style,
-        ...themeOverride,
-      },
-    };
+    // Single Theme - return as-is
+    return theme as Theme;
   }
 
   private applyTypeOverrides(
     variant: ToastVariantDefinition,
-    toastType: ToastType
+    _toastType: ToastType
   ): ToastVariantDefinition {
-    if (!variant.typeOverrides) {
-      return variant;
-    }
+    // For now, just return the variant as-is
+    // Type overrides will be handled in the style resolution phase
+    return variant;
+  }
 
-    const typeOverride = variant.typeOverrides[toastType];
-    if (!typeOverride) {
-      return variant;
-    }
-
+  private themeToStyle(theme: Theme): Partial<VariantStyle> {
+    // Convert theme properties to style properties for backward compatibility
     return {
-      ...variant,
-      style: {
-        ...variant.style,
-        ...typeOverride,
-      },
+      backgroundColor: theme.colors.surface,
+      textColor: theme.colors.onSurface,
+      titleColor: theme.colors.onSurface,
+      borderColor: theme.colors.border,
+      borderRadius:
+        typeof theme.borderRadius === 'number' ? theme.borderRadius : 8,
+      // Add more mappings as needed
     };
   }
 
-  private resolveThemeReferences(
-    variant: ToastVariantDefinition,
-    theme: Theme
-  ): ToastVariantDefinition {
-    if (!variant.style) {
-      return variant;
-    }
-
-    const resolvedStyle = { ...variant.style };
-
-    // Theme color reference mapping
-    const themeColorMap: Record<string, string> = {
-      primary: theme.colors.primary,
-      secondary: theme.colors.secondary,
-      success: theme.colors.success,
-      error: theme.colors.error,
-      warning: theme.colors.warning,
-      info: theme.colors.info,
-      background: theme.colors.background,
-      surface: theme.colors.surface,
-      surfaceVariant: theme.colors.surfaceVariant,
-      onPrimary: theme.colors.onPrimary,
-      onSecondary: theme.colors.onSecondary,
-      onSurface: theme.colors.onSurface,
-      onSurfaceVariant: theme.colors.onSurfaceVariant,
-      border: theme.colors.border,
-      borderVariant: theme.colors.borderVariant,
-      overlay: theme.colors.overlay,
-      shadow: theme.colors.shadow,
-    };
-
-    // Resolve color and other theme references
-    Object.keys(resolvedStyle).forEach((key) => {
-      const value = resolvedStyle[key as keyof VariantStyle];
-
-      if (typeof value === 'string') {
-        // Handle theme.colors.xxx references (predefined variants format)
-        if (value.startsWith('theme.colors.')) {
-          const colorKey = value.replace('theme.colors.', '');
-          if (themeColorMap[colorKey]) {
-            (resolvedStyle as any)[key] = themeColorMap[colorKey];
-          }
-        }
-        // Handle theme.borderRadius.xxx references
-        else if (value.startsWith('theme.borderRadius.')) {
-          const borderRadiusKey = value.replace('theme.borderRadius.', '');
-          const borderRadiusValue = (theme.borderRadius as any)[
-            borderRadiusKey
-          ];
-          if (borderRadiusValue !== undefined) {
-            (resolvedStyle as any)[key] = borderRadiusValue;
-          }
-        }
-        // Handle direct color references (new theme-aware variants format)
-        else if (themeColorMap[value]) {
-          (resolvedStyle as any)[key] = themeColorMap[value];
-        }
-      }
-    });
-
+  private getCompleteStyle(
+    style: Partial<VariantStyle> = {}
+  ): Required<VariantStyle> {
     return {
-      ...variant,
-      style: resolvedStyle,
-    };
-  }
-
-  private getCompleteStyle(style: VariantStyle = {}): Required<VariantStyle> {
-    return {
-      backgroundColor: style.backgroundColor || '#FFFFFF',
-      backgroundOpacity: style.backgroundOpacity ?? 1,
+      backgroundColor: style.backgroundColor || 'transparent',
+      backgroundOpacity: style.backgroundOpacity || 1,
       backgroundGradient: style.backgroundGradient || '',
-      borderColor: style.borderColor || '#E5E7EB',
-      borderWidth: style.borderWidth ?? 1,
+      borderColor: style.borderColor || 'transparent',
+      borderWidth: style.borderWidth || 0,
       borderStyle: style.borderStyle || 'solid',
-      borderRadius: style.borderRadius ?? 8,
-      textColor: style.textColor || '#1F2937',
-      titleColor: style.titleColor || '#1F2937',
+      borderRadius: style.borderRadius || 8,
+      textColor: style.textColor || '#000000',
+      titleColor: style.titleColor || '#000000',
       textAlign: style.textAlign || 'left',
-      iconColor: style.iconColor || '#6B7280',
+      iconColor: style.iconColor || '#000000',
       iconSize: style.iconSize || 'medium',
       iconPosition: style.iconPosition || 'left',
-      padding: style.padding ?? 16,
-      margin: style.margin ?? 8,
-      minHeight: style.minHeight ?? 56,
-      maxWidth: style.maxWidth ?? 400,
+      padding: style.padding || 16,
+      margin: style.margin || 0,
+      minHeight: style.minHeight || 0,
+      maxWidth: style.maxWidth || 400,
       shadowColor: style.shadowColor || '#000000',
-      shadowOpacity: style.shadowOpacity ?? 0.1,
-      shadowRadius: style.shadowRadius ?? 4,
-      shadowOffset: style.shadowOffset || { x: 0, y: 2 },
-      elevation: style.elevation ?? 2,
-      animationDuration: style.animationDuration ?? 300,
-      animationEasing: style.animationEasing || 'ease-in-out',
+      shadowOpacity: style.shadowOpacity || 0,
+      shadowRadius: style.shadowRadius || 0,
+      shadowOffset: style.shadowOffset || { x: 0, y: 0 },
+      elevation: style.elevation || 0,
+      animationDuration: style.animationDuration || 300,
+      animationEasing: style.animationEasing || 'ease-out',
     };
   }
 
@@ -637,7 +382,7 @@ export class VariantManager implements IVariantManager {
       defaultDuration: behavior.defaultDuration ?? 4000,
       dismissOnTap: behavior.dismissOnTap ?? true,
       allowManualDismiss: behavior.allowManualDismiss ?? true,
-      priority: behavior.priority || 'medium',
+      priority: behavior.priority ?? 'medium',
       stackable: behavior.stackable ?? true,
       replaceExisting: behavior.replaceExisting ?? false,
     };

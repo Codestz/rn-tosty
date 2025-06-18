@@ -23,10 +23,8 @@ export const toast: ToastAPI = {
     return manager.show({
       message,
       type: 'success',
-      variant: config?.variant || 'success-filled', // Smart default
+      variant: config?.variant || 'success', // Smart default
       ...config,
-      // Rename for internal consistency
-      styleOverrides: config?.styleOverrides,
     });
   },
 
@@ -37,10 +35,8 @@ export const toast: ToastAPI = {
     return manager.show({
       message,
       type: 'error',
-      variant: config?.variant || 'error-filled', // Use available variant
+      variant: config?.variant || 'error', // Use available variant
       ...config,
-      // Rename for internal consistency
-      styleOverrides: config?.styleOverrides,
     });
   },
 
@@ -51,10 +47,8 @@ export const toast: ToastAPI = {
     return manager.show({
       message,
       type: 'info',
-      variant: config?.variant || 'info-filled', // Smart default
+      variant: config?.variant || 'info', // Smart default
       ...config,
-      // Rename for internal consistency
-      styleOverrides: config?.styleOverrides,
     });
   },
 
@@ -65,10 +59,8 @@ export const toast: ToastAPI = {
     return manager.show({
       message,
       type: 'warning',
-      variant: config?.variant || 'warning-filled', // Smart default
+      variant: config?.variant || 'warning', // Smart default
       ...config,
-      // Rename for internal consistency
-      styleOverrides: config?.styleOverrides,
     });
   },
 

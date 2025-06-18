@@ -23,8 +23,8 @@ export const useToastStyles = (
 ) => {
   // Resolve variant configuration with smart defaults
   const resolvedVariant = useMemo(() => {
-    return resolveToastVariantSmart(toast, theme);
-  }, [toast, theme]);
+    return resolveToastVariantSmart(toast, theme, config);
+  }, [toast, theme, config]);
 
   // Get variant-based configurations
   const variantBehavior = useMemo(() => {
@@ -48,8 +48,8 @@ export const useToastStyles = (
 
   // Create container style using modern variant system
   const variantContainerStyle = useMemo(() => {
-    return variantStyleToRNStyle(resolvedVariant.style, theme);
-  }, [resolvedVariant.style, theme]);
+    return variantStyleToRNStyle(resolvedVariant.theme, theme);
+  }, [resolvedVariant.theme, theme]);
 
   const containerStyle = useMemo(
     () => [
@@ -79,28 +79,28 @@ export const useToastStyles = (
     () => [
       baseStyles.title,
       {
-        fontSize: theme.typography.titleFontSize,
-        fontWeight: theme.typography.fontWeight.semiBold,
-        lineHeight: theme.typography.titleLineHeight,
+        fontSize: theme.typography.title.size,
+        fontWeight: theme.typography.title.weight,
+        lineHeight: theme.typography.title.lineHeight,
       },
-      getVariantTextStyles(resolvedVariant.style, true),
+      getVariantTextStyles(resolvedVariant.theme, true),
       getTextAlignmentStyle(layout.textAlignment),
     ],
-    [theme.typography, resolvedVariant.style, layout.textAlignment]
+    [theme.typography, resolvedVariant.theme, layout.textAlignment]
   );
 
   const messageStyle = useMemo(
     () => [
       baseStyles.message,
       {
-        fontSize: theme.typography.bodyFontSize,
-        fontWeight: theme.typography.fontWeight.regular,
-        lineHeight: theme.typography.bodyLineHeight,
+        fontSize: theme.typography.description.size,
+        fontWeight: theme.typography.description.weight,
+        lineHeight: theme.typography.description.lineHeight,
       },
-      getVariantTextStyles(resolvedVariant.style, false),
+      getVariantTextStyles(resolvedVariant.theme, false),
       getTextAlignmentStyle(layout.textAlignment),
     ],
-    [theme.typography, resolvedVariant.style, layout.textAlignment]
+    [theme.typography, resolvedVariant.theme, layout.textAlignment]
   );
 
   // Determine number of lines based on variant intelligently
@@ -109,11 +109,6 @@ export const useToastStyles = (
       case 'minimal':
       case 'compact':
         return 1;
-      case 'banner':
-        return 2;
-      case 'card':
-      case 'alert':
-        return 4;
       default:
         return 3;
     }
@@ -131,8 +126,8 @@ export const useToastStyles = (
     getMessageLines,
     // Expose variant colors for custom icons (including loading icons)
     variantColors: {
-      textColor: resolvedVariant.style.textColor,
-      iconColor: resolvedVariant.style.iconColor,
+      textColor: resolvedVariant.theme.colors.onSurface,
+      iconColor: iconConfig.iconColor || resolvedVariant.theme.colors.onSurface,
     },
   };
 };

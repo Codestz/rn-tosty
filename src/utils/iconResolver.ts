@@ -144,26 +144,7 @@ export const resolveIconConfig = (
 /**
  * Gets the default icon color based on toast type and theme
  */
-const getDefaultIconColor = (type: ToastType, theme: Theme): string => {
-  const isGlassmorphism = theme.name.includes('liquidGlass');
-
-  if (isGlassmorphism) {
-    // For glassmorphism, use theme colors
-    switch (type) {
-      case 'success':
-        return theme.colors.success;
-      case 'error':
-        return theme.colors.error;
-      case 'warning':
-        return theme.colors.warning;
-      case 'info':
-        return theme.colors.info;
-      default:
-        return theme.colors.primary;
-    }
-  }
-
-  // For other themes, use white for contrast on colored backgrounds
+const getDefaultIconColor = (_type: ToastType, _theme: Theme): string => {
   return '#FFFFFF';
 };
 
