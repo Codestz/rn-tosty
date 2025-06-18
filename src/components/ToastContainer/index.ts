@@ -1,4 +1,3 @@
-// ToastContainer - Barrel export
 export { PositionContainer } from './PositionContainer';
 export { ToastContainer } from './ToastContainer';
 export type {

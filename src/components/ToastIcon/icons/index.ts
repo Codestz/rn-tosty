@@ -1,4 +1,3 @@
-// Icons - Barrel export
 export { ErrorIcon } from './ErrorIcon';
 export { InfoIcon } from './InfoIcon';
 export { SuccessIcon } from './SuccessIcon';

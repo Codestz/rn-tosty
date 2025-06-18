@@ -1,4 +1,3 @@
-// ToastIcon - Barrel export
 export { ToastIcon } from './ToastIcon';
 export type {
   IconComponentProps,

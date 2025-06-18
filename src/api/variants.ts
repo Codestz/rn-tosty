@@ -3,6 +3,8 @@ import { VariantManager } from '../services/VariantManager';
 import type {
   CustomVariantConfig,
   PredefinedVariantName,
+  SimpleThemeAwareVariantConfig,
+  ThemeAwareVariantBuilder,
   ToastVariantDefinition,
   VariantBuilder,
   VariantName,
@@ -55,6 +57,55 @@ export const variants = {
    */
   registerCustom: (config: CustomVariantConfig): void => {
     variantManager.registerCustomVariant(config);
+  },
+
+  /**
+   * Register a theme-aware variant with separate styles for light and dark modes
+   * @param config - Theme-aware variant configuration
+   * @example
+   * ```typescript
+   * variants.registerThemeAware({
+   *   name: 'my-adaptive-card',
+   *   displayName: 'My Adaptive Card',
+   *   light: {
+   *     backgroundColor: '#F3F4F6',
+   *     textColor: '#1F2937',
+   *     borderColor: '#D1D5DB',
+   *   },
+   *   dark: {
+   *     backgroundColor: '#1F2937',
+   *     textColor: '#F9FAFB',
+   *     borderColor: '#374151',
+   *   },
+   *   behavior: {
+   *     defaultDuration: 4000,
+   *   }
+   * });
+   * ```
+   */
+  registerThemeAware: (config: SimpleThemeAwareVariantConfig): void => {
+    variantManager.registerThemeAwareVariant(config);
+  },
+
+  /**
+   * Register a variant that automatically adapts to the current theme
+   * @param config - Variant config with auto-adapting style
+   * @example
+   * ```typescript
+   * variants.registerAdaptive({
+   *   name: 'auto-success',
+   *   extends: 'success-filled',
+   *   style: {
+   *     // These colors will be automatically adjusted for light/dark themes
+   *     backgroundColor: 'success', // Uses theme's success color
+   *     textColor: 'onSurface',     // Uses theme's onSurface color
+   *     borderColor: 'border',      // Uses theme's border color
+   *   }
+   * });
+   * ```
+   */
+  registerAdaptive: (config: SimpleThemeAwareVariantConfig): void => {
+    variantManager.registerThemeAwareVariant(config);
   },
 
   /**
@@ -112,6 +163,34 @@ export const variants = {
   },
 
   /**
+   * Create a theme-aware variant using the enhanced builder pattern
+   * @returns ThemeAwareVariantBuilder instance
+   * @example
+   * ```typescript
+   * const adaptiveVariant = variants.createThemeAware()
+   *   .setName('adaptive-card')
+   *   .setDisplayName('Adaptive Card')
+   *   .forLightMode({
+   *     backgroundColor: '#FFFFFF',
+   *     textColor: '#1F2937',
+   *     borderColor: '#E5E7EB',
+   *   })
+   *   .forDarkMode({
+   *     backgroundColor: '#1F2937',
+   *     textColor: '#F9FAFB',
+   *     borderColor: '#374151',
+   *   })
+   *   .setBehavior({ defaultDuration: 5000 })
+   *   .build();
+   *
+   * variants.register(adaptiveVariant);
+   * ```
+   */
+  createThemeAware: (): ThemeAwareVariantBuilder => {
+    return variantManager.createThemeAwareVariant();
+  },
+
+  /**
    * Validate a variant definition
    * @param variant - Variant to validate
    * @returns True if valid, false otherwise
@@ -164,6 +243,8 @@ export const PREDEFINED_VARIANTS: Record<
 export type {
   CustomVariantConfig,
   PredefinedVariantName,
+  SimpleThemeAwareVariantConfig,
+  ThemeAwareVariantBuilder,
   ToastVariantDefinition,
   VariantBuilder,
   VariantName,

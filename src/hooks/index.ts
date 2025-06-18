@@ -1,4 +1,4 @@
-// Hooks - Barrel export
+export { useTheme } from './useTheme';
 export { useToast } from './useToast';
 export { useToastAnimation } from './useToastAnimation';
 export { useToastGrouping } from './useToastGrouping';

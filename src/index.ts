@@ -1,6 +1,7 @@
 // Core API exports
 export { toast } from './api/toast';
 export { ToastProvider } from './context/ToastProvider';
+export { useTheme } from './hooks/useTheme';
 export { useToast as useTosty } from './hooks/useToast';
 
 // Presets exports - All user configuration presets
@@ -18,7 +19,11 @@ export { createIconConfig, createVectorIcon } from './utils/iconResolver';
 // Essential Type exports for user configuration
 export type { AccessibilityConfig } from './types/AccessibilityTypes';
 export type { SafeAreaConfig } from './types/SafeAreaTypes';
-export type { Theme } from './types/ThemeTypes';
+export type { Theme, ThemeName, ThemePair } from './types/ThemeTypes';
+
+// Theme management types
+export type { UseThemeReturn } from './hooks/useTheme';
+export type { UseToastReturn } from './hooks/useToast';
 
 // Configuration types - What users need to configure the provider
 export type {
@@ -47,6 +52,9 @@ export type {
 export type {
   CustomVariantConfig,
   PredefinedVariantName,
+  SimpleThemeAwareVariantConfig,
+  ThemeAwareVariantBuilder,
+  ThemeAwareVariantStyle,
   ToastVariantDefinition,
   VariantBuilder,
   VariantName,

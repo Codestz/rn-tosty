@@ -44,6 +44,24 @@ export interface VariantStyle {
   animationEasing?: string;
 }
 
+// Theme-aware style configuration
+export interface ThemeAwareVariantStyle {
+  // Option 1: Use a single style that adapts automatically to theme
+  style?: VariantStyle;
+
+  // Option 2: Define separate styles for light and dark modes
+  light?: VariantStyle;
+  dark?: VariantStyle;
+
+  // Option 3: Use theme-specific overrides (for multiple themes)
+  themeStyles?: {
+    [themeName: string]: {
+      light?: VariantStyle;
+      dark?: VariantStyle;
+    };
+  };
+}
+
 // Variant behavior configuration
 export interface VariantBehavior {
   // Auto-dismiss behavior
@@ -62,14 +80,17 @@ export interface VariantBehavior {
   replaceExisting?: boolean;
 }
 
-// Complete variant definition
+// Complete variant definition (enhanced with theme-aware styles)
 export interface ToastVariantDefinition {
   name: string;
   displayName?: string;
   description?: string;
 
-  // Style configuration
-  style: VariantStyle;
+  // Theme-aware style configuration (new enhanced version)
+  themeAwareStyle?: ThemeAwareVariantStyle;
+
+  // Legacy style configuration (for backward compatibility)
+  style?: VariantStyle;
 
   // Behavior configuration
   behavior?: VariantBehavior;
@@ -77,7 +98,7 @@ export interface ToastVariantDefinition {
   // Type-specific overrides
   typeOverrides?: Partial<Record<ToastType, Partial<VariantStyle>>>;
 
-  // Theme-specific overrides
+  // Theme-specific overrides (legacy - will be deprecated)
   themeOverrides?: Record<string, Partial<VariantStyle>>;
 
   // Icon configuration
@@ -101,10 +122,46 @@ export type PredefinedVariantName =
   | 'warning-filled'
   | 'info-filled';
 
-// Custom variant configuration
+// Enhanced custom variant configuration with theme-aware styles
 export interface CustomVariantConfig
   extends Omit<ToastVariantDefinition, 'name'> {
   name: string;
+
+  // Enhanced style options
+  themeAwareStyle?: ThemeAwareVariantStyle;
+
+  // For backward compatibility
+  style?: VariantStyle;
+}
+
+// Simplified theme-aware variant config for easier usage
+export interface SimpleThemeAwareVariantConfig {
+  name: string;
+  displayName?: string;
+  description?: string;
+  extends?: string;
+
+  // Simple theme-aware style options
+  light?: VariantStyle;
+  dark?: VariantStyle;
+
+  // Or auto-adapting style
+  style?: VariantStyle;
+
+  // Behavior configuration
+  behavior?: VariantBehavior;
+
+  // Type-specific overrides
+  typeOverrides?: Partial<Record<ToastType, Partial<VariantStyle>>>;
+
+  // Icon configuration
+  iconConfig?: {
+    showIcon?: boolean;
+    iconComponent?: CustomIconComponent;
+    typeIcons?: Partial<
+      Record<ToastType, CustomIconComponent | ToastTypeIconConfig>
+    >;
+  };
 }
 
 // Variant registry for managing all variants
@@ -144,14 +201,19 @@ export interface VariantResolutionContext {
   isRTL?: boolean;
 }
 
-// Variant builder for creating custom variants
+// Enhanced variant builder for creating theme-aware custom variants
 export interface VariantBuilder {
   // Base configuration
   setName(name: string): VariantBuilder;
   setDisplayName(displayName: string): VariantBuilder;
   setDescription(description: string): VariantBuilder;
 
-  // Style methods
+  // Enhanced style methods for theme-aware styling
+  setLightStyle(style: VariantStyle): VariantBuilder;
+  setDarkStyle(style: VariantStyle): VariantBuilder;
+  setAdaptiveStyle(style: VariantStyle): VariantBuilder; // Auto-adapts to theme
+
+  // Legacy style methods (for backward compatibility)
   setBackgroundColor(color: string): VariantBuilder;
   setTextColor(color: string): VariantBuilder;
   setBorderColor(color: string): VariantBuilder;
@@ -176,7 +238,7 @@ export interface VariantBuilder {
     style: Partial<VariantStyle>
   ): VariantBuilder;
 
-  // Theme overrides
+  // Theme overrides (legacy)
   setThemeOverride(
     themeName: string,
     style: Partial<VariantStyle>
@@ -189,11 +251,12 @@ export interface VariantBuilder {
   build(): ToastVariantDefinition;
 }
 
-// Variant manager interface
+// Enhanced variant manager interface
 export interface VariantManager {
   // Registration
   registerVariant(variant: ToastVariantDefinition): void;
   registerCustomVariant(config: CustomVariantConfig): void;
+  registerThemeAwareVariant(config: SimpleThemeAwareVariantConfig): void; // New method
 
   // Retrieval
   getVariant(name: string): ToastVariantDefinition | null;
@@ -221,8 +284,32 @@ export interface VariantManager {
 
   // Builder
   createVariant(): VariantBuilder;
+  createThemeAwareVariant(): ThemeAwareVariantBuilder; // New builder
 }
 
-// Export types for external use
+// New theme-aware variant builder interface
+export interface ThemeAwareVariantBuilder {
+  setName(name: string): ThemeAwareVariantBuilder;
+  setDisplayName(displayName: string): ThemeAwareVariantBuilder;
+  setDescription(description: string): ThemeAwareVariantBuilder;
+
+  // Theme-aware styling
+  forLightMode(style: VariantStyle): ThemeAwareVariantBuilder;
+  forDarkMode(style: VariantStyle): ThemeAwareVariantBuilder;
+  forAllModes(style: VariantStyle): ThemeAwareVariantBuilder; // Auto-adapting
+
+  // Behavior
+  setBehavior(behavior: VariantBehavior): ThemeAwareVariantBuilder;
+
+  // Inheritance
+  extends(parentVariantName: string): ThemeAwareVariantBuilder;
+
+  // Build
+  build(): ToastVariantDefinition;
+}
+
 export type VariantName = PredefinedVariantName | string;
-export type VariantConfig = ToastVariantDefinition | CustomVariantConfig;
+export type VariantConfig =
+  | ToastVariantDefinition
+  | CustomVariantConfig
+  | SimpleThemeAwareVariantConfig;
