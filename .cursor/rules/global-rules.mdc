@@ -9,5 +9,3 @@ alwaysApply: true
 - Try always to create scalable, reliable and self-descriptive code.
 - Always try to add JSDoc to the functions, methods, and other things.
 - Don't leave comments that doesn't generate any value.
-- The library doesn't have a version published, so we don't need backward compatibility.
-- Don't worry about formatting.

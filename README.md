@@ -1,5 +1,9 @@
 # 🍞 rn-tosty
 
+<div align="center">
+  <img src="./docs/static/img/library-icon.png" alt="rn-tosty Demo" width="400" />
+</div>
+
 **The most delicious toast notifications for React Native**
 
 <div align="center">
