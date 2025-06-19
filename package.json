@@ -1,6 +1,6 @@
 {
   "name": "rn-tosty",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.1",
   "description": "🍞 Production-ready React Native toast notifications with advanced theme system, smart queue management, gesture controls, haptic feedback, and comprehensive accessibility. Features 4 unique themes, theme-aware variants, smooth 60fps animations, promise integration with progress bars, enterprise-grade queue management, and complete TypeScript support. Perfect for creating engaging, accessible, and performant toast experiences in your React Native apps.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
@@ -13,36 +13,6 @@
       "require": {
         "types": "./lib/typescript/src/index.d.ts",
         "default": "./lib/module/index.js"
-      }
-    },
-    "./advanced": {
-      "import": {
-        "types": "./lib/typescript/src/advanced.d.ts",
-        "default": "./lib/module/advanced.js"
-      },
-      "require": {
-        "types": "./lib/typescript/src/advanced.d.ts",
-        "default": "./lib/module/advanced.js"
-      }
-    },
-    "./themes": {
-      "import": {
-        "types": "./lib/typescript/src/themes.d.ts",
-        "default": "./lib/module/themes.js"
-      },
-      "require": {
-        "types": "./lib/typescript/src/themes.d.ts",
-        "default": "./lib/module/themes.js"
-      }
-    },
-    "./utils": {
-      "import": {
-        "types": "./lib/typescript/src/utils.d.ts",
-        "default": "./lib/module/utils.js"
-      },
-      "require": {
-        "types": "./lib/typescript/src/utils.d.ts",
-        "default": "./lib/module/utils.js"
       }
     },
     "./package.json": "./package.json"
