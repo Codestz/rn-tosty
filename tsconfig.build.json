@@ -1,4 +1,11 @@
 {
   "extends": "./tsconfig",
-  "exclude": ["example", "lib"]
+  "compilerOptions": {
+    "outDir": "lib/typescript",
+    "sourceMap": false,
+    "declaration": true,
+    "declarationMap": false,
+    "removeComments": true
+  },
+  "exclude": ["example", "lib", "docs"]
 }

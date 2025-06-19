@@ -1,14 +1,49 @@
 {
   "name": "rn-tosty",
-  "version": "0.1.0",
-  "description": "Deliciously interactive React Native toast notifications with gesture controls, haptic feedback, and smart queue management. Make your notifications as engaging as they are informative.",
+  "version": "1.0.0",
+  "description": "🍞 Production-ready React Native toast notifications with advanced theme system, smart queue management, gesture controls, haptic feedback, and comprehensive accessibility. Features 4 unique themes, theme-aware variants, smooth 60fps animations, promise integration with progress bars, enterprise-grade queue management, and complete TypeScript support. Perfect for creating engaging, accessible, and performant toast experiences in your React Native apps.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
   "exports": {
     ".": {
-      "source": "./src/index.tsx",
-      "types": "./lib/typescript/src/index.d.ts",
-      "default": "./lib/module/index.js"
+      "import": {
+        "types": "./lib/typescript/src/index.d.ts",
+        "default": "./lib/module/index.js"
+      },
+      "require": {
+        "types": "./lib/typescript/src/index.d.ts",
+        "default": "./lib/module/index.js"
+      }
+    },
+    "./advanced": {
+      "import": {
+        "types": "./lib/typescript/src/advanced.d.ts",
+        "default": "./lib/module/advanced.js"
+      },
+      "require": {
+        "types": "./lib/typescript/src/advanced.d.ts",
+        "default": "./lib/module/advanced.js"
+      }
+    },
+    "./themes": {
+      "import": {
+        "types": "./lib/typescript/src/themes.d.ts",
+        "default": "./lib/module/themes.js"
+      },
+      "require": {
+        "types": "./lib/typescript/src/themes.d.ts",
+        "default": "./lib/module/themes.js"
+      }
+    },
+    "./utils": {
+      "import": {
+        "types": "./lib/typescript/src/utils.d.ts",
+        "default": "./lib/module/utils.js"
+      },
+      "require": {
+        "types": "./lib/typescript/src/utils.d.ts",
+        "default": "./lib/module/utils.js"
+      }
     },
     "./package.json": "./package.json"
   },
@@ -29,10 +64,13 @@
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
+    "!**/*.map",
     "!**/.*"
   ],
   "scripts": {
-    "example": "yarn workspace rn-tosty-example",
+    "example": "yarn workspace rn-tosty-example start",
+    "example:android": "yarn workspace rn-tosty-example android",
+    "example:ios": "yarn workspace rn-tosty-example ios",
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
@@ -80,16 +118,25 @@
     "react": "19.0.0",
     "react-native": "0.79.2",
     "react-native-builder-bob": "^0.40.11",
+    "react-native-device-info": "^14.0.4",
+    "react-native-reanimated": "^3.18.0",
+    "react-native-safe-area-context": "^5.4.1",
+    "react-native-svg": "^15.12.0",
     "release-it": "^17.10.0",
     "turbo": "^1.10.7",
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-device-info": ">=10.0.0",
+    "react-native-reanimated": ">=3.0.0",
+    "react-native-safe-area-context": ">=4.0.0",
+    "react-native-svg": ">=13.0.0"
   },
   "workspaces": [
-    "example"
+    "example",
+    "docs"
   ],
   "packageManager": "yarn@3.6.1",
   "jest": {
@@ -137,7 +184,8 @@
       [
         "module",
         {
-          "esm": true
+          "esm": true,
+          "sourceMaps": false
         }
       ],
       [
