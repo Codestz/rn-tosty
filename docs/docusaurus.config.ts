@@ -8,7 +8,7 @@ const config: Config = {
   title: 'rn-tosty',
   tagline:
     'Production-ready React Native toast notifications with advanced theme system, smart queue management, and comprehensive accessibility',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/library-icon.png',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {

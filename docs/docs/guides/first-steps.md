@@ -145,6 +145,8 @@ RN-Tosty comes with four beautiful themes. Try them out:
 <ToastProvider theme="default">     {/* 🎯 Professional, clean */}
 ```
 
+or you can create your own theme [Theme Overview →](../theming/overview.md)
+
 **Which theme to choose?**
 
 - **Default:** Business apps, productivity tools
@@ -192,64 +194,26 @@ Configure global behavior:
     defaultPosition: 'top',
 
     // Enable/disable progress bars
-    progressBar: { enabled: true },
+    progressBar: {
+      enabled: true,
+      position: 'top',
+      height: 4,
+      showForTypes: {
+        success: true,
+        error: true,
+        warning: true,
+        info: true,
+        custom: true,
+      },
+      animation: { duration: 100, easing: 'linear' },
+    },
   }}
 >
   <App />
 </ToastProvider>
 ```
 
-## 🎯 Step 8: Common Patterns
-
-Here are some patterns you'll use frequently:
-
-### Loading States
-
-```tsx
-const handleAsyncAction = async () => {
-  const toastId = toast.loading('Saving...');
-
-  try {
-    await saveData();
-    toast.success('Saved successfully!', { id: toastId });
-  } catch (error) {
-    toast.error('Failed to save', { id: toastId });
-  }
-};
-```
-
-### User Actions
-
-```tsx
-const handleLikePost = () => {
-  toast.success('Post liked! ❤️', { duration: 2000 });
-};
-
-const handleCopyLink = () => {
-  Clipboard.setString(link);
-  toast.success('Link copied to clipboard');
-};
-```
-
-### Form Validation
-
-```tsx
-const handleSubmit = () => {
-  if (!email) {
-    toast.error('Please enter your email');
-    return;
-  }
-
-  if (!isValidEmail(email)) {
-    toast.warning('Please enter a valid email address');
-    return;
-  }
-
-  toast.success('Form submitted successfully!');
-};
-```
-
-## 📱 Step 9: Test on Device
+## 📱 Step 8: Test on Device
 
 Make sure to test your toasts on actual devices:
 
@@ -269,7 +233,7 @@ npx react-native run-ios
 - ✅ Touch interactions work correctly
 - ✅ Accessibility features work (try VoiceOver/TalkBack)
 
-## 🔍 Step 10: Debug & Troubleshoot
+## 🔍 Step 9: Debug & Troubleshoot
 
 ### Common Issues
 
@@ -304,17 +268,6 @@ console.log('Available themes:', Object.keys(Themes));
 ```tsx
 // Limit simultaneous toasts
 <ToastProvider config={{ maxToasts: 2 }}>
-```
-
-### Enable Debug Mode
-
-```tsx
-<ToastProvider
-  theme="default"
-  config={{
-    debug: true // Shows helpful console logs
-  }}
->
 ```
 
 ## 🚀 Next Steps

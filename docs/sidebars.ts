@@ -69,13 +69,6 @@ const sidebars: SidebarsConfig = {
       label: '🚀 Advanced',
       items: ['advanced/promise-integration'],
     },
-
-    // API Reference Section
-    {
-      type: 'category',
-      label: '📚 API Reference',
-      items: ['api/overview'],
-    },
   ],
 };
 

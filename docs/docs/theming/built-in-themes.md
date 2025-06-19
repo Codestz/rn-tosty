@@ -323,35 +323,6 @@ const customTheme = {
 <ToastProvider theme={customTheme}>
 ```
 
-### Theme-Aware Components
-
-```tsx
-import { useThemeContext } from 'rn-tosty';
-
-function ThemedComponent() {
-  const theme = useThemeContext();
-
-  return (
-    <View
-      style={{
-        backgroundColor: theme.colors.surface,
-        borderColor: theme.colors.border,
-        padding: theme.spacing.container,
-      }}
-    >
-      <Text
-        style={{
-          color: theme.colors.onSurface,
-          fontSize: theme.typography.title.size,
-        }}
-      >
-        This component adapts to the current theme!
-      </Text>
-    </View>
-  );
-}
-```
-
 ## 🎯 Choosing the Right Theme
 
 ### Consider Your App's Purpose
@@ -380,25 +351,6 @@ function ThemedComponent() {
 - Promotes environmental awareness
 - Feels authentic and grounded
 
-### Consider Your Brand
-
-```tsx
-// Match your existing brand colors
-const brandGreen = '#00C853';
-
-// Choose theme that complements your brand
-if (brandMatches('#10B981')) {
-  // Use Default or Forest Glow
-  return 'forestGlow';
-} else if (brandMatches('#F97316')) {
-  // Use Warm Sunset
-  return 'warmSunset';
-} else if (brandMatches('#0891B2')) {
-  // Use Ocean Breeze
-  return 'oceanBreeze';
-}
-```
-
 ## 🔧 Advanced Theme Features
 
 ### Theme Transitions
@@ -425,24 +377,6 @@ toast.success('Brand message!', { variant: 'brand-primary' });
 toast.success('Celebration time!', {
   variant: themeName === 'warmSunset' ? 'celebration' : 'default',
 });
-```
-
-### Theme Analytics
-
-```tsx
-import { useTheme } from 'rn-tosty';
-
-function useThemeAnalytics() {
-  const { themeName, themeMode } = useTheme();
-
-  useEffect(() => {
-    analytics.track('theme_changed', {
-      theme: themeName,
-      mode: themeMode,
-      timestamp: Date.now(),
-    });
-  }, [themeName, themeMode]);
-}
 ```
 
 ## 🚀 Next Steps

@@ -165,10 +165,9 @@ const handleSave = () => {
 
 **What happens:**
 
-1. 🔄 Loading toast appears with a spinner
-2. ⏱️ Progress bar shows time remaining
-3. ✅ Automatically transitions to success with user data
-4. ❌ Or shows error if something goes wrong
+1. 🔄 Loading toast appears with a animated icon (spinner, bars, dots, pulse or a custom one)
+2. ✅ Automatically transitions to success with user data
+3. ❌ Or shows error if something goes wrong
 
 ## 🎯 Complete Example
 

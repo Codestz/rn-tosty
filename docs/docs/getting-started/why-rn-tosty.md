@@ -23,9 +23,9 @@ Instead of generic notifications, get toasts that feel like they belong in your 
 // Boring, generic toast 😴
 Toast.show({ text: 'Success' });
 
-// Beautiful, themed toast that matches your app 🎉
+// Beautiful, variant toast that matches your app 🎉
 toast.success('Profile updated successfully!', {
-  theme: 'warmSunset', // Cozy, welcoming vibes
+  variant: 'outlined-sucess', // Custom outlined sucess alert
 });
 ```
 
@@ -56,9 +56,8 @@ const saveProfile = async () => {
 **What happens:**
 
 1. Loading toast appears instantly with beautiful animation
-2. Progress bar shows users something is happening
-3. Seamlessly transitions to success or error state
-4. All with type-safe TypeScript support
+2. Seamlessly transitions to success or error state
+3. All with type-safe TypeScript support
 
 ### 🎯 **Performance That Matters**
 
