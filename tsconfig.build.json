@@ -7,5 +7,5 @@
     "declarationMap": false,
     "removeComments": true
   },
-  "exclude": ["example", "lib"]
+  "exclude": ["example", "lib", "docs"]
 }

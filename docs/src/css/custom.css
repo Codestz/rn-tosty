@@ -1,0 +1,103 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* Orange theme to match the toast icon */
+:root {
+  --ifm-color-primary: #ff6b35;
+  --ifm-color-primary-dark: #ff5722;
+  --ifm-color-primary-darker: #f4511e;
+  --ifm-color-primary-darkest: #e64a19;
+  --ifm-color-primary-light: #ff8a65;
+  --ifm-color-primary-lighter: #ff9e80;
+  --ifm-color-primary-lightest: #ffab91;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(255, 107, 53, 0.1);
+
+  /* Custom landing page colors for light mode */
+  --landing-hero-bg: linear-gradient(135deg, #ff8c42 0%, #ff6b35 100%);
+  --landing-card-bg: #ffffff;
+  --landing-card-shadow: rgba(255, 107, 53, 0.1);
+}
+
+/* Dark mode with orange accent */
+[data-theme='dark'] {
+  --ifm-color-primary: #ff8a65;
+  --ifm-color-primary-dark: #ff7043;
+  --ifm-color-primary-darker: #ff6b35;
+  --ifm-color-primary-darkest: #ff5722;
+  --ifm-color-primary-light: #ff9e80;
+  --ifm-color-primary-lighter: #ffab91;
+  --ifm-color-primary-lightest: #ffccbc;
+  --docusaurus-highlighted-code-line-bg: rgba(255, 138, 101, 0.3);
+
+  /* Custom landing page colors for dark mode */
+  --landing-hero-bg: linear-gradient(135deg, #bf360c 0%, #d84315 100%);
+  --landing-card-bg: #2d2d2d;
+  --landing-card-shadow: rgba(255, 138, 101, 0.2);
+}
+
+/* Enhanced Footer Styling */
+.footer {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+  border-top: 2px solid #ff6b35 !important;
+}
+
+.footer__logo {
+  border-radius: 15px !important;
+  box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3) !important;
+  transition: transform 0.3s ease !important;
+}
+
+.footer__logo:hover {
+  transform: scale(1.05) !important;
+}
+
+.footer__title {
+  color: #ff8a65 !important;
+  font-weight: 700 !important;
+  font-size: 1.1rem !important;
+  margin-bottom: 1rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.footer__item {
+  margin-bottom: 0.5rem !important;
+}
+
+.footer__link-item {
+  color: rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s ease !important;
+  padding: 0.25rem 0 !important;
+  border-radius: 4px !important;
+}
+
+.footer__link-item:hover {
+  color: #ff8a65 !important;
+  text-decoration: none !important;
+  transform: translateX(4px) !important;
+}
+
+.footer__copyright {
+  text-align: center !important;
+  border-top: 1px solid rgba(255, 138, 101, 0.2) !important;
+  margin-top: 2rem !important;
+  padding-top: 2rem !important;
+}
+
+/* Dark mode footer adjustments */
+[data-theme='dark'] .footer {
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%) !important;
+}
+
+[data-theme='dark'] .footer__title {
+  color: #ffab91 !important;
+}
+
+[data-theme='dark'] .footer__link-item:hover {
+  color: #ffab91 !important;
+}
