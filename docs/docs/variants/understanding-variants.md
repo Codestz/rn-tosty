@@ -354,23 +354,6 @@ toast.success('Action completed!', {
 });
 ```
 
-### Variant Composition
-
-```tsx
-// Combine multiple variant concepts
-const createUrgentVariant = (baseVariant) => ({
-  ...baseVariant,
-  colors: {
-    ...baseVariant.colors,
-    primary: '#DC2626', // Always urgent red
-  },
-  shadows: {
-    ...baseVariant.shadows,
-    shadowOpacity: 0.3, // More prominent shadow
-  },
-});
-```
-
 ## 🎯 Best Practices
 
 ### 1. **Name Variants Clearly**

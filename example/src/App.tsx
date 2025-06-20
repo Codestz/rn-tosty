@@ -258,7 +258,7 @@ const InteractiveDemos: React.FC = () => {
         promise(mockApiSuccess(2000), {
           loading: {
             icon: { type: 'bars' },
-            message: 'Loading...',
+            message: 'Loading success...',
           },
           success: (data) => `Welcome ${data.name}! (${data.status})`,
           error: (err) => `Failed: ${err.message}`,
@@ -270,7 +270,7 @@ const InteractiveDemos: React.FC = () => {
               mockApiError(),
               {
                 loading: {
-                  message: 'Loading...',
+                  message: 'Loading error...',
                   icon: { type: 'spinner', size: 'large' },
                 },
                 success: (data) =>

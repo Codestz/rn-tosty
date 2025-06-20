@@ -239,6 +239,17 @@ const handleFileUpload = (file) => {
       toast.error(`❌ Failed to upload ${file.name}`);
     });
 };
+
+// Or using promise strategy
+
+promise(uploadFile(file), {
+  loading: {
+    icon: { type: 'spinner' },
+    message: 'We are uploading your file',
+  },
+  success: (data) => `File uploaded: ${data.id}`,
+  error: (err) => `Failed to upload: ${err.message}`,
+});
 ```
 
 ### Social Interactions

@@ -253,18 +253,17 @@ import { IconPresets } from 'rn-tosty';
 
 ## 🎭 Variant Configuration
 
-Set default variants for different toast types:
+Set default variants for toast that doesn't have a explicit variant configuration
 
 ```tsx
+// This doesn't have a variant configured, will fallback to the configured in the Provider.
+// If doesn't exist will use default.
+toast.custom('Quick message!', { duration: 2000 });
+
+
 <ToastProvider
   config={{
     defaultVariant: 'default',
-    variants: {
-      success: 'celebration',    // Custom success variant
-      error: 'urgent',          // Custom error variant
-      info: 'subtle',           // Custom info variant
-      warning: 'attention',     // Custom warning variant
-    },
   }}
 >
 ```
@@ -432,43 +431,6 @@ Ensure your toasts work for everyone:
     queue: QueuePresets.immediate(), // Immediate feedback for games
   }}
 >
-```
-
-## 🔧 Dynamic Configuration
-
-Change configuration at runtime:
-
-```tsx
-import { useToastConfig } from 'rn-tosty';
-
-function SettingsScreen() {
-  const { updateConfig } = useToastConfig();
-
-  const handleToggleProgressBars = (enabled) => {
-    updateConfig({
-      progressBar: { enabled },
-    });
-  };
-
-  const handleChangeMaxToasts = (maxToasts) => {
-    updateConfig({ maxToasts });
-  };
-
-  return (
-    <View>
-      <Switch
-        value={progressBarsEnabled}
-        onValueChange={handleToggleProgressBars}
-      />
-      <Slider
-        value={maxToasts}
-        onValueChange={handleChangeMaxToasts}
-        minimumValue={1}
-        maximumValue={5}
-      />
-    </View>
-  );
-}
 ```
 
 ## 🎯 Best Practices

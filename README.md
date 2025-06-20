@@ -1,5 +1,9 @@
 # 🍞 rn-tosty
 
+<div align="center">
+  <img src="./docs/static/img/library-icon.png" alt="rn-tosty Demo" width="400" />
+</div>
+
 **The most delicious toast notifications for React Native**
 
 <div align="center">
@@ -87,11 +91,11 @@ toast.promise(api.createUser(), {
 
 ### 💪 **Production-Grade Everything**
 
-Built by developers who've shipped apps to millions of users. Every edge case handled, every performance detail optimized, every accessibility standard met.
+Built by a developer who've shipped apps to millions of users. Every edge case handled, every performance detail optimized, every accessibility standard met.
 
 ## 📚 Documentation
 
-**[📖 Complete Documentation](https://codestz.github.io/rn-tosty/)** • **[🚀 Quick Start](https://codestz.github.io/rn-tosty/docs/intro)** • **[🎨 Theme Gallery](https://codestz.github.io/rn-tosty/docs/features/themes)**
+**[📖 Complete Documentation](https://codestz.github.io/rn-tosty/)** • **[🚀 Quick Start](https://codestz.github.io/rn-tosty/docs/intro)** •
 
 ## 🚀 Installation
 

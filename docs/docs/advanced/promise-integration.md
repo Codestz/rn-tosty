@@ -45,10 +45,9 @@ const handleSave = () => {
 **What happens automatically:**
 
 1. 🔄 Loading toast appears with spinner animation
-2. ⏱️ Progress bar shows estimated time remaining
-3. ✅ Seamlessly transitions to success toast on resolve
-4. ❌ Or transitions to error toast on rejection
-5. 🧹 Automatically cleans up and manages state
+2. ✅ Seamlessly transitions to success toast on resolve
+3. ❌ Or transitions to error toast on rejection
+4. 🧹 Automatically cleans up and manages state
 
 ## 📚 Basic Usage
 
@@ -103,32 +102,6 @@ toast.promise(fetchData(), {
   success: 'Data loaded!',
   error: 'Loading failed',
 });
-```
-
-### Progress Configuration
-
-Control the progress bar appearance:
-
-```tsx
-toast.promise(
-  processData(),
-  {
-    loading: 'Processing...',
-    success: 'Complete!',
-    error: 'Failed!',
-  },
-  {
-    // Toast configuration applies to all states
-    position: 'bottom',
-    layout: { iconPosition: 'right' },
-    progressBar: {
-      enabled: true,
-      position: 'top',
-      color: '#10B981',
-      height: 4,
-    },
-  }
-);
 ```
 
 ### Multiple Step Operations
@@ -293,57 +266,76 @@ const syncWithRetry = async (data, maxRetries = 3) => {
 
 ## 🎛️ Configuration Options
 
-### Promise Messages Configuration
+### Promise Messages and Promise Configuration
 
 ```tsx
-interface PromiseMessages<T> {
-  loading:
-    | string
-    | {
-        message: string;
-        icon?: {
-          type: 'spinner' | 'dots' | 'bars' | 'pulse';
-          size?: 'small' | 'medium' | 'large' | number;
-          color?: string;
-          animated?: boolean;
-        };
-      };
-  success: string | ((data: T) => string);
-  error: string | ((error: Error) => string);
+interface PromiseMessages<T = any> {
+  loading: PromiseMessage<T>;
+  success: PromiseMessage<T>;
+  error: PromiseErrorMessage;
+}
+
+type PromiseMessage<T = any> =
+  | string
+  | ((data: T) => string)
+  | PromiseToastConfig
+  | ((data: T) => PromiseToastConfig);
+
+interface PromiseConfig {
+  position?: ToastPosition;
+  /** Global layout configuration applied to all promise toast states */
+  layout?: ToastLayoutConfig;
 }
 ```
 
-### Promise Configuration
+### Promise Configuration Examples
 
 ```tsx
-interface PromiseConfig {
-  // Standard toast configuration
-  position?: 'top' | 'bottom';
-  priority?: 'low' | 'medium' | 'high' | 'urgent';
-  variant?: string;
+toast.promise(mockApiSuccess(2000), {
+  loading: {
+    icon: { type: 'bars' },
+    message: 'Loading success...',
+  },
+  success: (data) => `Welcome ${data.name}! (${data.status})`,
+  error: (err) => `Failed: ${err.message}`,
+});
 
-  // Layout options
-  layout?: {
-    iconPosition?: 'left' | 'right';
-    textAlignment?: 'left' | 'center' | 'right';
-    spacing?: 'compact' | 'default' | 'spacious';
-  };
+toast.promise<{ id: number; name: string }>(
+  mockApiError(),
+  {
+    loading: {
+      message: 'Loading error...',
+      icon: { type: 'spinner', size: 'large' },
+    },
+    success: (data) => `Data loaded successfully: ${data?.name ?? ''}`,
+    error: (err) => `Error loading data: ${err.message}`,
+  },
+  {
+    layout: {
+      iconPosition: 'right',
+      textAlignment: 'left',
+      spacing: 'spacious',
+    },
+  }
+);
 
-  // Progress bar (applies to loading state)
-  progressBar?: {
-    enabled?: boolean;
-    position?: 'top' | 'bottom';
-    color?: string;
-    height?: number;
-  };
-
-  // Duration overrides
-  duration?: {
-    loading?: number; // How long to show loading (0 = until resolved)
-    success?: number; // Success toast duration
-    error?: number; // Error toast duration
-  };
-}
+toast.promise<{ id: number; name: string }>(mockApiError(), {
+  loading: {
+    message: 'Loading error...',
+    icon: { type: 'spinner', size: 'large' },
+    variant: 'showcase-error',
+  },
+  success: (data) => ({
+    message: `Data loaded successfully: ${data?.name ?? ''}`,
+    variant: 'showcase-success',
+    title: 'Success',
+  }),
+  error: (err) => ({
+    message: `Error loading data: ${err.message}`,
+    variant: 'showcase-error',
+    title: 'Error',
+  }),
+});
 ```
 
 ## 🎨 Loading Icon Types
@@ -506,29 +498,7 @@ onClick={() => {
 }}
 ```
 
-### 2. **Smart Duration Settings**
-
-```tsx
-// Quick operations - shorter durations
-toast.promise(
-  quickSave(),
-  {
-    /* messages */
-  },
-  { duration: { success: 2000, error: 4000 } }
-);
-
-// Important operations - longer durations
-toast.promise(
-  criticalUpdate(),
-  {
-    /* messages */
-  },
-  { duration: { success: 5000, error: 8000 } }
-);
-```
-
-### 3. **Memory Management**
+### 2. **Memory Management**
 
 ```tsx
 // For long-running operations, store the promise reference
