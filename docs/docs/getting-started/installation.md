@@ -2,6 +2,10 @@
 
 Get RN-Tosty up and running in your React Native app in just a few minutes.
 
+:::warning Native Modules Required
+**RN-Tosty uses native modules** and requires native dependencies. This means it cannot be used in Expo Go but works with **Expo Development Builds**, **EAS Build**, or **ejected Expo projects**.
+:::
+
 ## 📋 Requirements
 
 Before installing RN-Tosty, make sure your project meets these requirements:
@@ -10,6 +14,7 @@ Before installing RN-Tosty, make sure your project meets these requirements:
 - **React**: ^18.0.0 or ^19.0.0
 - **iOS**: 11.0+
 - **Android**: API level 21+
+- **Expo**: SDK 49+ (requires Development Build or EAS Build)
 
 ## 🚀 Quick Install
 
@@ -48,6 +53,100 @@ pnpm add react-native-reanimated react-native-safe-area-context react-native-dev
 - **react-native-device-info**: Automatic device detection and adaptation
 - **react-native-svg**: Beautiful vector icons that scale perfectly
   :::
+
+## 📱 Expo Installation
+
+Since RN-Tosty uses native modules, you cannot use it with **Expo Go**. However, it works perfectly with:
+
+### Option 1: Expo Development Build (Recommended)
+
+1. **Install RN-Tosty and dependencies**:
+
+   ```bash
+   npx expo install rn-tosty react-native-reanimated react-native-safe-area-context react-native-device-info react-native-svg
+   ```
+
+2. **Configure Reanimated** in your `babel.config.js`:
+
+   ```js
+   module.exports = function (api) {
+     api.cache(true);
+     return {
+       presets: ['babel-preset-expo'],
+       plugins: [
+         'react-native-reanimated/plugin', // This must be last
+       ],
+     };
+   };
+   ```
+
+3. **Create a development build**:
+
+   ```bash
+   # Install EAS CLI if you haven't
+   npm install -g @expo/cli
+
+   # Create development build
+   npx expo run:ios
+   # or
+   npx expo run:android
+   ```
+
+### Option 2: EAS Build
+
+1. **Install dependencies**:
+
+   ```bash
+   npx expo install rn-tosty react-native-reanimated react-native-safe-area-context react-native-device-info react-native-svg
+   ```
+
+2. **Configure Reanimated** in your `babel.config.js` (same as above)
+
+3. **Build with EAS**:
+
+   ```bash
+   # Install EAS CLI
+   npm install -g eas-cli
+
+   # Configure EAS
+   eas build:configure
+
+   # Build for development
+   eas build --profile development
+   ```
+
+### Option 3: Ejected Expo Project
+
+If you've ejected your Expo project, follow the standard React Native installation instructions below.
+
+### 🔧 Expo Troubleshooting
+
+#### "Cannot resolve module" in Expo
+
+```bash
+# Clear Expo cache
+npx expo start -c
+
+# Or restart with clean Metro cache
+npx expo r -c
+```
+
+#### EAS Build fails
+
+Make sure your `eas.json` includes the required native dependencies:
+
+```json
+{
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    }
+  }
+}
+```
+
+## 🚀 React Native CLI Installation
 
 ### 3. Platform-Specific Setup
 
@@ -214,6 +313,40 @@ npx react-native run-android
 
 2. Check that MainApplication.java includes the Reanimated package
 
+#### Expo-Specific Issues
+
+#### "RN-Tosty doesn't work in Expo Go"
+
+This is expected behavior. RN-Tosty uses native modules and cannot run in Expo Go. You need to:
+
+1. **Use Expo Development Build**: `npx expo run:ios` or `npx expo run:android`
+2. **Use EAS Build**: Build a custom development client
+3. **Eject from Expo**: Convert to a bare React Native project
+
+#### "Reanimated not working in Expo"
+
+Make sure your `babel.config.js` is properly configured:
+
+```js
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: [
+      'react-native-reanimated/plugin', // Must be last!
+    ],
+  };
+};
+```
+
+Then rebuild your development build:
+
+```bash
+npx expo run:ios --clear-cache
+# or
+npx expo run:android --clear-cache
+```
+
 ### Version Compatibility
 
 | RN-Tosty Version | React Native | React   | Reanimated |
@@ -232,7 +365,8 @@ npx react-native run-android
 ### 🔄 Tested Configurations
 
 - **React Native**: 0.70.x, 0.71.x, 0.72.x, 0.73.x, 0.74.x
-- **Expo**: SDK 49+
+- **Expo**: SDK 49+ (Development Build / EAS Build only)
+- **Expo Go**: ❌ Not supported (native modules required)
 - **New Architecture**: Partial support (Fabric + TurboModules)
 
 ## 🎯 Next Steps

@@ -99,19 +99,31 @@ Built by a developer who've shipped apps to millions of users. Every edge case h
 
 ## 🚀 Installation
 
+> **⚠️ Important**: RN-Tosty uses **native modules** and requires additional setup steps. **Don't just install and expect it to work!**
+>
+> **📖 [Complete Installation Guide](https://codestz.github.io/rn-tosty/docs/getting-started/installation)** ← **Follow this for proper setup**
+
+### Quick Install (Setup Required)
+
 ```bash
+# Step 1: Install the package
 npm install rn-tosty
 # or
 yarn add rn-tosty
-```
 
-### Required Dependencies
-
-```bash
+# Step 2: Install required native dependencies
 npm install react-native-reanimated react-native-safe-area-context react-native-device-info react-native-svg
 ```
 
-> **Note**: `react-native-safe-area-context` is a peer dependency to avoid conflicts with apps that already use it.
+### ⚡ What's Next?
+
+After installing, you **MUST** complete the setup:
+
+- **React Native CLI**: [Platform-specific setup](https://codestz.github.io/rn-tosty/docs/getting-started/installation#-react-native-cli-installation) (iOS/Android configuration)
+- **Expo Projects**: [Special Expo setup](https://codestz.github.io/rn-tosty/docs/getting-started/installation#-expo-installation) (Cannot use Expo Go!)
+- **Configuration**: Babel config for Reanimated, pod install for iOS, etc.
+
+> **🚨 Expo Users**: This library **cannot run in Expo Go**. You need **Expo Development Build** or **EAS Build**.
 
 ## 🎯 Quick Start
 
