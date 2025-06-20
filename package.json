@@ -1,6 +1,6 @@
 {
   "name": "rn-tosty",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "🍞 Production-ready React Native toast notifications with advanced theme system, smart queue management, gesture controls, haptic feedback, and comprehensive accessibility. Features 4 unique themes, theme-aware variants, smooth 60fps animations, promise integration with progress bars, enterprise-grade queue management, and complete TypeScript support. Perfect for creating engaging, accessible, and performant toast experiences in your React Native apps.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
